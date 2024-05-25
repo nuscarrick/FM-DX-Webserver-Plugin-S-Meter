@@ -11,7 +11,7 @@ v1.1
 * Corrected slight signal inaccuracies
 * Added lighter grey bar to display signal peak (for current frequency)
 * Removed separate image file
-* Optional placement within or outside SIGNAL field
+* Optional placement within or outside SIGNAL field (edit `pluginSignalMeterSmall.js`)
 
 v1.0
 ----
