@@ -4,7 +4,7 @@
     https://github.com/NO2CW/FM-DX-Webserver-analog-signal-meter
 */
 
-isOutsideField = true;
+isOutsideField = false;
 
 (function() {
     function initAnalogMeterSmall() {
@@ -97,7 +97,11 @@ isOutsideField = true;
                 var isAtMaxWidth = screen.availWidth - window.innerWidth === 0;
 
                 if (!(/Mobi|Android/i.test(navigator.userAgent)) && isAtMaxWidth && window.innerHeight > 864) {
-                    signalMeter.style.margin = '10px 0 0 ' + margin;
+                    if (isOutsideField) {
+                        signalMeter.style.margin = '10px 0 0 ' + margin;
+                    } else {
+                        signalMeter.style.margin = '0 0 0 ' + margin;
+                    }
                 }
 
                 if (!isNaN(signalStrength)) {
