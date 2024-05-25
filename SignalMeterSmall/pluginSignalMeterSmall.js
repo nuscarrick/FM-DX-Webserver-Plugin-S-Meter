@@ -1,8 +1,10 @@
 /*
     Signal Meter Small by AAD
-    https://github.com/AmateurAudioDude/FM-DX-Webserver-Plugins
+    https://github.com/AmateurAudioDude/FM-DX-Webserver-Plugin-S-Meter
     https://github.com/NO2CW/FM-DX-Webserver-analog-signal-meter
 */
+
+isOutsideField = true;
 
 (function() {
     function initAnalogMeterSmall() {
@@ -14,11 +16,19 @@
             signalMeter.id = 'signal-meter-small-canvas';
             signalMeter.style.width = '256px';
             signalMeter.style.height = '12px';
-            signalMeter.style.margin = '4px 0 0 -128px';
-            signalMeter.style.position = 'absolute';
+            // Inside or outside SIGNAL field
+            if (isOutsideField) {
+                offset = -128;
+                signalMeter.style.margin = '4px 0 0 ' + offset + 'px';
+                signalMeter.style.position = 'absolute';
+            } else {
+                offset = 0;
+                signalMeter.style.margin = '4px 0 0 ' + offset + 'px';
+                signalMeter.style.position = 'relative';
+            }
             container.appendChild(signalMeter);
 
-            // Override breadcrumbs.css to make this canvas visible
+            // Override breadcrumbs.css to make this canvas visible on mobile devices
             document.getElementById('signal-meter-small-canvas').style.display = 'inline-block';
 
             // Add tooltip
@@ -30,44 +40,54 @@
             signalMeter.height = 12;
 
             const backgroundImage = new Image();
-            backgroundImage.src = 'images/signal-meter-small-background.png'; // Ensure path is correct
+            backgroundImage.src = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAgAAAAAYCAMAAAC7vLUXAAAAB3RJTUUH6AUZFiMj11d9+wAAAAlwSFlzAAAK8AAACvABQqw0mAAAAE5QTFRFAP8A/wAA/2Bg////////////AP8A/wAA////////////////////////////AP8A/wAA////////////////////////AP8A/2Bg////SV+9OwAAABd0Uk5TAAAAABAgMDAwQFBgcH+PkZGfr7/P3++KEr+hAAAEIElEQVRo3u2a3XbbKhCF07Oh1YBGCeKn3e//oucCFLu2kKV4JV2tzUXWivN5MjDbwwb5BVpI5gHP8ZDjZWSZNLDY51o8pgAiHYDA8bkWjyyA53hYASgZ/NMBPK4AMJFkfraBhxUAjJsSnxvB4woAAGbOH3r799fX7y8r4696fcc8f7y9/fi2Y/wV3IUJnAHAf1AArz9/vv7tr+8RwNuvX291CTeg/yp3M9gf5i4FwNmJL/RPATymAIZEkpzw3AIecwsARHX86D3gy78wdszz27801kzgh4fIMVz1wJ3DICIiu99gpI79ajZ+j/ZNTeEG61TrWljVjSOVcUuYbQ7AMpMtsM3Z3F7bTn73CcBG8gBuEknG3XzkIV5Yh+5+QyFZbrkfyYwt99IvRCTJAMBv5jyUJUN/a25jm8km2OYsQNices1vvg53lwBcyfmIAAJHmAOPHRg+0AEm7m1KphSBTf3nYFQAyshYc7e5mC41wgR6WCYLXamEEgByEdjEocvJkr4tgQr0wMYpWwfwDMbMV3Nfwk01P70Kd5cA4mziEQHMEwC733Du/yyfVTXv7hieHsDQz4dafzDCMALwa+KlAkiphar6y2VdADZ6AJ6uy70LIBZDBXrguwDa76kYwF6d5htW04f6q3B3CWAADgngbNl31ZLeOjHHwuvuBrCgTJsCGABGCBWAWbsuOcnUUduCTBzWO0DrhLbLLQJwdDVyB2zclCFuAFArnDo6cfSQcVgJd68JPCgA0Wl/AxAGkuXQkypT4gEptr24Y1eVUVXr4i5iiX0KSMU24lKGqhqpqgJ4nYvHOudVA4Oqr42MinXwxMWUSIYm0ItynDDlWKoHuAz3xQLwkWm/R2OykFLM5zQAIHMS7dgYbY6SmwI4pxDYKyx48qdTYnQdLjYsQovdEMCJi21vXxXAWTgWrR7gDwsAwMiw29SZtmF+SgOoh5jsYln9m4gwiEitwVizuBTAORXoAZS0JgARCVxOqCbQr3ODyMhRZLCL/VgP+M5hGAAgp+Zkfi/HCdO66CVfhft6ASAd3DWOfFnpUAMAAAP0H4MsuzsjhNXAhi5V649I03b5vgcwjF2ubtrKGGNkjkMPlPOZxtKcTM49D7A0iMtwXykAU5cvl929wh2s6bEGMMQRwNg3pWcCQMkAdI2tVKt/DWdKXj8FOHpUs97jasV8fBdAB2yVLalNe6YF5EqgyymgpHqivAr3pR1gZhAXdx/ubCletG/S724AiSpa+vHb1RkYAeUs4yqrAmBkUlX1MKV4WfuenSgAk4uKz5QuZ9X+Lq0O2LiJs7hEB2FyLl/daSzhdOEuw32pAEwgWfYf7odMMppPagDAEEnG23fBjAAmksluX1oytqTHzX+ZHW5xZ71lG5yWy0xfyCIbn43GXYT7H9cP20tGXSYXAAAAAElFTkSuQmCC';
             backgroundImage.onload = function() {
                 ctx.drawImage(backgroundImage, 0, 0, signalMeter.width, signalMeter.height);
             };
 
             setInterval(function() {
+                // Store current signal strength in variable
                 const signalStrengthText = document.getElementById('data-signal') ? document.getElementById('data-signal').textContent : '0';
                 let signalStrength = parseFloat(signalStrengthText);
                 const textContent = localStorage.getItem('signalUnit');
                 signalStrength += (textContent === 'dbm' ? 120 : textContent === 'dbuv' ? 11.25 : 0);
+
+                // Store peak signal strength in variable
+                const signalStrengthHighestText = document.getElementById('data-signal-highest') ? document.getElementById('data-signal-highest').textContent : '0';
+                let signalStrengthHighest = parseFloat(signalStrengthHighestText);
+                signalStrengthHighest += (textContent === 'dbm' ? 120 : textContent === 'dbuv' ? 11.25 : 0);
 
                 // Resize if needed
                 var width, margin;
 
                 if (window.innerWidth > 768) {
                     switch (true) {
-                        case (window.innerWidth <= 864):
+                        case (window.innerWidth <= 880):
+                            width = '192px';
+                            if (isOutsideField) { margin = (offset + 32) + 'px'; }
+                            break;
+                        case (window.innerWidth <= 928):
                             width = '208px';
-                            margin = '-104px';
+                            if (isOutsideField) { margin = (offset + 24) + 'px'; }
                             break;
-                        case (window.innerWidth <= 912):
+                        case (window.innerWidth <= 976):
                             width = '224px';
-                            margin = '-112px';
+                            if (isOutsideField) { margin = (offset + 16) + 'px'; }
                             break;
-                        case (window.innerWidth <= 960):
+                        case (window.innerWidth <= 1024):
                             width = '240px';
-                            margin = '-120px';
+                            if (isOutsideField) { margin = (offset + 8) + 'px'; }
                             break;
                         default:
                             width = '256px';
-                            margin = '-128px';
+                            margin = offset + 'px';
                     }
                     signalMeter.style.width = width;
                     signalMeter.width = parseInt(width);
                     signalMeter.style.margin = '4px 0 0 ' + margin;
                 } else {
-                    width = '272px';
-                    margin = '-136px';
+                    width = '256px';
+                    margin = offset + 'px';
                     signalMeter.style.width = width;
                     signalMeter.width = parseInt(width);
                     signalMeter.style.margin = '2px 0 0 ' + margin;
@@ -76,12 +96,12 @@
                 // Attempt to detect maximised window
                 var isAtMaxWidth = screen.availWidth - window.innerWidth === 0;
 
-                if (!(/Mobi|Android/i.test(navigator.userAgent)) && isAtMaxWidth) {
+                if (!(/Mobi|Android/i.test(navigator.userAgent)) && isAtMaxWidth && window.innerHeight > 864) {
                     signalMeter.style.margin = '10px 0 0 ' + margin;
                 }
 
                 if (!isNaN(signalStrength)) {
-                    drawSignalMeter(signalStrength, ctx, backgroundImage, signalMeter);
+                    drawSignalMeter(signalStrength, signalStrengthHighest, ctx, backgroundImage, signalMeter);
                 }
             }, 200);
 
@@ -114,7 +134,7 @@
         });
     }
 
-    function drawSignalMeter(signalValue, ctx, backgroundImage, signalMeter) {
+    function drawSignalMeter(signalValue, signalValueHighest, ctx, backgroundImage, signalMeter) {
         // Clear the canvas before redrawing
         ctx.clearRect(0, 0, signalMeter.width, signalMeter.height);
 
@@ -125,14 +145,29 @@
         ctx.beginPath();
         ctx.moveTo(8, 0); // Start from the top left corner
         ctx.lineTo(signalMeter.width, 0); // Move horizontally to the right
-        ctx.strokeStyle = '#212223';
+        ctx.strokeStyle = '#212223'; // Dark Grey
         ctx.lineWidth = 8;
         ctx.stroke();
 
         // Calculate the needle position
-        const normalizedStrength = ((signalValue + 36) / (130)) * 100; // Normalize the signal value between 0 and 1
-        const maxPosition = (signalMeter.width + 3) / 100; // Maximum position for the needle (subtract needle width)
-        const needlePosition = normalizedStrength * maxPosition;
+        const normalizedStrength = ((signalValue + 37) / (132)) * 100;
+        const maxPosition = (signalMeter.width + 8) / 100;
+        const needlePosition = Math.min(normalizedStrength * maxPosition, 256);
+
+        const normalizedStrengthHighest = ((signalValueHighest + 37) / (132)) * 100;
+        const needlePositionHighest = Math.min(normalizedStrengthHighest * maxPosition, 256);
+
+        // Image signal locations in pixels:
+        // 1, 32 | 2, 44 | 3, 56 | 4, 68 | 5, 80 | 6, 92 | 7, 104 | 8, 116 | 9, 128
+        // +10, 148 | +20, 168 | +30, 188 | +40, 208 | +50, 228 | +60, 248
+        //console.log(Math.round(normalizedStrength), Math.round(needlePosition));
+
+        ctx.beginPath();
+        ctx.moveTo(8, 0); // Start from the top left corner
+        ctx.lineTo(Math.min(needlePositionHighest, signalMeter.width), 0); // Move horizontally to the right up to half width
+        ctx.strokeStyle = '#313233'; // Grey
+        ctx.lineWidth = 8;
+        ctx.stroke();
 
         // Draw the first half of the needle in green
         ctx.beginPath();
@@ -146,7 +181,8 @@
         ctx.beginPath();
         ctx.moveTo(signalMeter.width / 2, 0); // Start from the top middle
         ctx.lineTo(Math.max(signalMeter.width / 2, needlePosition), 0); // Move horizontally to the right from half width
-        ctx.strokeStyle = '#E81808'; // Red
+        ctx.strokeStyle = '#E01808'; // Red
+        ctx.lineWidth = 8;
         ctx.stroke();
     }
 
