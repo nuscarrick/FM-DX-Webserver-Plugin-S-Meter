@@ -4,7 +4,7 @@
     https://github.com/NO2CW/FM-DX-Webserver-analog-signal-meter
 */
 
-isOutsideField = false;
+isOutsideField = true;
 
 (function() {
     function initAnalogMeterSmall() {
