@@ -1,5 +1,5 @@
 /*
-    Signal Meter Small by AAD
+    Signal Meter Small v1.1 by AAD
     https://github.com/AmateurAudioDude/FM-DX-Webserver-Plugin-S-Meter
     https://github.com/NO2CW/FM-DX-Webserver-analog-signal-meter
 */
@@ -169,7 +169,7 @@ isOutsideField = true;
         ctx.beginPath();
         ctx.moveTo(8, 0); // Start from the top left corner
         ctx.lineTo(Math.min(needlePositionHighest, signalMeter.width), 0); // Move horizontally to the right up to half width
-        ctx.strokeStyle = '#313233'; // Grey
+        ctx.strokeStyle = '#333538'; // Grey
         ctx.lineWidth = 8;
         ctx.stroke();
 
