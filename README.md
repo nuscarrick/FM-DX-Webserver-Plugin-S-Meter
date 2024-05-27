@@ -1,5 +1,9 @@
 # S-Meter plugin for FM-DX-Webserver
 
+This plugin displays a signal meter below the signal data.
+
+![s-meter](https://github.com/AmateurAudioDude/FM-DX-Webserver-Plugin-S-Meter/assets/168192910/276ffb44-0857-4d14-a9c6-71474a132238)
+
 * [Download the latest zip file](https://github.com/AmateurAudioDude/FM-DX-Webserver-Plugin-S-Meter/archive/refs/heads/main.zip)
 * Transfer `SignalMeterSmall` folder, and `SignalMeterSmall.js` to FM-DX-Webserver `plugins` folder
 * Restart FM-DX-Webserver if required
