@@ -1,14 +1,17 @@
 /*
-    Signal Meter Small v1.1 by AAD
+    Signal Meter Small v1.1.1 by AAD
     https://github.com/AmateurAudioDude/FM-DX-Webserver-Plugin-S-Meter
     https://github.com/NO2CW/FM-DX-Webserver-analog-signal-meter
 */
 
 isOutsideField = true;
+enableLowSignalInterpolation = true;
 
 (function() {
     function initAnalogMeterSmall() {
         document.addEventListener('DOMContentLoaded', function() {
+            debugMode = false; // For personal use only
+
             const panels = Array.from(document.querySelectorAll('.panel-33'));
             const container = panels.find(panel => panel.querySelector('h2') && panel.querySelector('h2').textContent.includes('SIGNAL'));
 
@@ -40,7 +43,7 @@ isOutsideField = true;
             signalMeter.height = 12;
 
             const backgroundImage = new Image();
-            backgroundImage.src = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAgAAAAAYCAMAAAC7vLUXAAAAB3RJTUUH6AUZFiMj11d9+wAAAAlwSFlzAAAK8AAACvABQqw0mAAAAE5QTFRFAP8A/wAA/2Bg////////////AP8A/wAA////////////////////////////AP8A/wAA////////////////////////AP8A/2Bg////SV+9OwAAABd0Uk5TAAAAABAgMDAwQFBgcH+PkZGfr7/P3++KEr+hAAAEIElEQVRo3u2a3XbbKhCF07Oh1YBGCeKn3e//oucCFLu2kKV4JV2tzUXWivN5MjDbwwb5BVpI5gHP8ZDjZWSZNLDY51o8pgAiHYDA8bkWjyyA53hYASgZ/NMBPK4AMJFkfraBhxUAjJsSnxvB4woAAGbOH3r799fX7y8r4696fcc8f7y9/fi2Y/wV3IUJnAHAf1AArz9/vv7tr+8RwNuvX291CTeg/yp3M9gf5i4FwNmJL/RPATymAIZEkpzw3AIecwsARHX86D3gy78wdszz27801kzgh4fIMVz1wJ3DICIiu99gpI79ajZ+j/ZNTeEG61TrWljVjSOVcUuYbQ7AMpMtsM3Z3F7bTn73CcBG8gBuEknG3XzkIV5Yh+5+QyFZbrkfyYwt99IvRCTJAMBv5jyUJUN/a25jm8km2OYsQNices1vvg53lwBcyfmIAAJHmAOPHRg+0AEm7m1KphSBTf3nYFQAyshYc7e5mC41wgR6WCYLXamEEgByEdjEocvJkr4tgQr0wMYpWwfwDMbMV3Nfwk01P70Kd5cA4mziEQHMEwC733Du/yyfVTXv7hieHsDQz4dafzDCMALwa+KlAkiphar6y2VdADZ6AJ6uy70LIBZDBXrguwDa76kYwF6d5htW04f6q3B3CWAADgngbNl31ZLeOjHHwuvuBrCgTJsCGABGCBWAWbsuOcnUUduCTBzWO0DrhLbLLQJwdDVyB2zclCFuAFArnDo6cfSQcVgJd68JPCgA0Wl/AxAGkuXQkypT4gEptr24Y1eVUVXr4i5iiX0KSMU24lKGqhqpqgJ4nYvHOudVA4Oqr42MinXwxMWUSIYm0ItynDDlWKoHuAz3xQLwkWm/R2OykFLM5zQAIHMS7dgYbY6SmwI4pxDYKyx48qdTYnQdLjYsQovdEMCJi21vXxXAWTgWrR7gDwsAwMiw29SZtmF+SgOoh5jsYln9m4gwiEitwVizuBTAORXoAZS0JgARCVxOqCbQr3ODyMhRZLCL/VgP+M5hGAAgp+Zkfi/HCdO66CVfhft6ASAd3DWOfFnpUAMAAAP0H4MsuzsjhNXAhi5V649I03b5vgcwjF2ubtrKGGNkjkMPlPOZxtKcTM49D7A0iMtwXykAU5cvl929wh2s6bEGMMQRwNg3pWcCQMkAdI2tVKt/DWdKXj8FOHpUs97jasV8fBdAB2yVLalNe6YF5EqgyymgpHqivAr3pR1gZhAXdx/ubCletG/S724AiSpa+vHb1RkYAeUs4yqrAmBkUlX1MKV4WfuenSgAk4uKz5QuZ9X+Lq0O2LiJs7hEB2FyLl/daSzhdOEuw32pAEwgWfYf7odMMppPagDAEEnG23fBjAAmksluX1oytqTHzX+ZHW5xZ71lG5yWy0xfyCIbn43GXYT7H9cP20tGXSYXAAAAAElFTkSuQmCC';
+            backgroundImage.src = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAgAAAAAYCAMAAAC7vLUXAAAAB3RJTUUH6AUbFjAAvtaFkAAAAAlwSFlzAAAK8AAACvABQqw0mAAAAE5QTFRFAP8A/wAA/2Bg////////////AP8A/wAA////////////////////////////AP8A/wAA////////////////////////AP8A/2Bg////SV+9OwAAABd0Uk5TAAAAABAgMDAwQFBgcH+PkZGfr7/P3++KEr+hAAAEHUlEQVRo3u2a23rbIBCE0w60WtDKRhySef8X7QUodhMdm+RzW5uLXDi/1ws7XgbkJ2ghmTs8xl2Op55l0MBiH2txnwKIdAAC+8da3LMAHuNuBaBk8A8HcL8CwECS+dEG7lYAMG5IfGwE9ysAABg5fijMj9Ppx9PM+Kde3zHPn+fzz287xj/BNRM4AoD/oABOz8+nupTvX1/i/47Xa9an5+fTHgGcX17Om9D3v5mrAji/vJwnAXB04gv9QwD3KYAukSQHPLaA+9wCAFHtP3oP+PQ/jB3z/PY/jWsT+OEhcgxXPXD30ImIyO43GKljv6qN3/MdMDWFDdap1rWwqitHK+OmMOscgDaTVa7N2Wyv7Zv8PkcANpIHcJNIMu7mIw/xwjp09xsKybLlgiQzttzLYiVMJMkAwK/m3JUpQ781t34P1+YsQFides1vvMT7FAG4kvMRAQT2MAcePzD8QQcYuLcpmVIENi0/D6MCUEbGmrvNxSxSPUygh2Wy0JlKKAEgF4FN7BY5mdK3JVCxxSlbB/AMxozv5j6FG2p++hrvUwQQRxOPCGAcANj9xnP/d/mqqnl3x/D0ALrlfKj1DyMMIwA/J14qgJRaqKq/XOYFYKMH4OkWuVcBxGKo2OJ0Wv9UDGDfneobVtOH+td4nyKADjgkgKtl31VLeuvEHAuvuxvAhDKtCqADGCFUAGbu2uQiU0dtCzKwm+8ArRPaRW4SgKMDFVvckCGuA1ArnMo85ughfYdLvM8ygQcFIDrsbwDCQLIcemJlSjwgxbbHLthVZVTVuriTWOIyBaRiG/FWhqoaqaoCeB2LxzznVQODqq+NjLrJxZRIhibQN+W4YMq+VA8wxbuRAHxk2u/RmCykFPM1DQDIHEQXbIw2R8lVAVxTCFwqLHjxp0NidAtcbFiEFrsigAsX294+K4CrcCxaPcCNBQCgZ9ht6kzbML+kAdRDTHaxzP5PRBhEpJa9r1m8FcA1FegBlDQnABEJnE6oJtDPc51Iz16ks5P92ODQdQCQU3Myv5fjgmld9JJf491OAEgHd40jP1o61AAAwADLj0Om3Z0RwmpgwyJV649I03b5ZQ9gGBe5umkrY4yROXbr3FSF0pxMzkseYGoQU7xbCMDU5ctld69wB2t6rAF0sQfQL5vSKwGgZAA6x1aq1b+GMyXPnwIcPapZX+JqxXycBLDO1S+0KREjLSDvBDqdAkoCYJleP/cmHWBkEBd3H+5sKV502aR/uAEkqmhZjt+uzsAIKEfpZ1kVAD2TqqqHKcXL3O/tRAGYXFR8pixyVu1v0trgBo7iEh2Eybn87k5jCqcTN8W7iQBMIFn2H+67TDKaL2oAQBdJxu27YEYAA8lk1y8tGVvS/epHZoct7uoYus4N02WmL2SRle9G41q8X1rg2uxvcVCaAAAAAElFTkSuQmCC';
             backgroundImage.onload = function() {
                 ctx.drawImage(backgroundImage, 0, 0, signalMeter.width, signalMeter.height);
             };
@@ -48,13 +51,14 @@ isOutsideField = true;
             setInterval(function() {
                 // Store current signal strength in variable
                 const signalStrengthText = document.getElementById('data-signal') ? document.getElementById('data-signal').textContent : '0';
-                let signalStrength = parseFloat(signalStrengthText);
+                const signalStrengthDecimalText = document.getElementById('data-signal-decimal') ? document.getElementById('data-signal-decimal').textContent : '0';
+                signalStrength = parseFloat(signalStrengthText) - parseFloat(signalStrengthDecimalText);
                 const textContent = localStorage.getItem('signalUnit');
                 signalStrength += (textContent === 'dbm' ? 120 : textContent === 'dbuv' ? 11.25 : 0);
 
                 // Store peak signal strength in variable
                 const signalStrengthHighestText = document.getElementById('data-signal-highest') ? document.getElementById('data-signal-highest').textContent : '0';
-                let signalStrengthHighest = parseFloat(signalStrengthHighestText);
+                signalStrengthHighest = parseFloat(signalStrengthHighestText);
                 signalStrengthHighest += (textContent === 'dbm' ? 120 : textContent === 'dbuv' ? 11.25 : 0);
 
                 // Resize if needed
@@ -154,21 +158,35 @@ isOutsideField = true;
         ctx.stroke();
 
         // Calculate the needle position
-        const normalizedStrength = ((signalValue + 37) / (132)) * 100;
         const maxPosition = (signalMeter.width + 8) / 100;
-        const needlePosition = Math.min(normalizedStrength * maxPosition, 256);
+
+        const normalizedStrength = ((signalValue + 37) / (132)) * 100;
+        needlePosition = Math.min(normalizedStrength * maxPosition, 256);
 
         const normalizedStrengthHighest = ((signalValueHighest + 37) / (132)) * 100;
-        const needlePositionHighest = Math.min(normalizedStrengthHighest * maxPosition, 256);
+        needlePositionHighest = Math.min(normalizedStrengthHighest * maxPosition, 256);
+
+        // Low signal interpolation
+        if (enableLowSignalInterpolation) {
+        var sRepValue = 72; // Value in px of the TEF noise floor
+        var sIntValue = 24; // Value in px of the iterpolated noise floor
+        var sMaxValue = 86; // Value in px where signal begins to deviate
+            if (needlePosition < sMaxValue) { needlePosition = sIntValue + (needlePosition - sRepValue) * (sMaxValue - sIntValue) / (sMaxValue - sRepValue); }
+            if (needlePositionHighest < sMaxValue) { needlePositionHighest = sIntValue + (needlePositionHighest - sRepValue) * (sMaxValue - sIntValue) / (sMaxValue - sRepValue); }
+        }
+
+        // Never fall below line starting position
+        needlePosition = Math.max(needlePosition, 9);
+        needlePositionHighest = Math.max(needlePositionHighest, 9);
 
         // Image signal locations in pixels:
-        // 1, 32 | 2, 44 | 3, 56 | 4, 68 | 5, 80 | 6, 92 | 7, 104 | 8, 116 | 9, 128
+        // 0, 20 | 1, 32 | 2, 44 | 3, 56 | 4, 68 | 5, 80 | 6, 92 | 7, 104 | 8, 116 | 9, 128
         // +10, 148 | +20, 168 | +30, 188 | +40, 208 | +50, 228 | +60, 248
-        //console.log(Math.round(normalizedStrength), Math.round(needlePosition));
+        if (debugMode) { console.log('normalizedStrength: ' + Math.round(normalizedStrength), '|| needlePosition: ' + Math.round(needlePosition), '|| signalStrength: ' + (signalStrength).toFixed(1), '|| signalStrengthHighest: ' + (signalStrengthHighest).toFixed(1)); }
 
         ctx.beginPath();
         ctx.moveTo(8, 0); // Start from the top left corner
-        ctx.lineTo(Math.min(needlePositionHighest, signalMeter.width), 0); // Move horizontally to the right up to half width
+        ctx.lineTo(Math.min((needlePositionHighest + 4), signalMeter.width), 0); // Move horizontally to the right up to half width
         ctx.strokeStyle = '#333538'; // Grey
         ctx.lineWidth = 8;
         ctx.stroke();
@@ -176,15 +194,16 @@ isOutsideField = true;
         // Draw the first half of the needle in green
         ctx.beginPath();
         ctx.moveTo(8, 0); // Start from the top left corner
-        ctx.lineTo(Math.min(needlePosition, signalMeter.width / 2), 0); // Move horizontally to the right up to half width
+        ctx.lineTo(Math.min(needlePosition, signalMeter.width / 2) + 4, 0); // Move horizontally to the right up to half width
         ctx.strokeStyle = '#08B818'; // Green
+        if (debugMode) { if (needlePosition < sMaxValue) { ctx.strokeStyle = '#08FF18'; } }
         ctx.lineWidth = 8;
         ctx.stroke();
 
         // Draw the second half of the needle in red
         ctx.beginPath();
-        ctx.moveTo(signalMeter.width / 2, 0); // Start from the top middle
-        ctx.lineTo(Math.max(signalMeter.width / 2, needlePosition), 0); // Move horizontally to the right from half width
+        ctx.moveTo((signalMeter.width / 2) + 4, 0); // Start from the top middle
+        ctx.lineTo(Math.max((signalMeter.width / 2) + 4, needlePosition + 4), 0); // Move horizontally to the right from half width
         ctx.strokeStyle = '#E01808'; // Red
         ctx.lineWidth = 8;
         ctx.stroke();
