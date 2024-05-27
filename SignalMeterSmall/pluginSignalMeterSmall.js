@@ -1,5 +1,5 @@
 /*
-    Signal Meter Small v1.1.1 by AAD
+    Signal Meter Small v1.1.2 by AAD
     https://github.com/AmateurAudioDude/FM-DX-Webserver-Plugin-S-Meter
     https://github.com/NO2CW/FM-DX-Webserver-analog-signal-meter
 */
@@ -10,7 +10,7 @@ enableLowSignalInterpolation = true;
 (function() {
     function initAnalogMeterSmall() {
         document.addEventListener('DOMContentLoaded', function() {
-            debugMode = false; // For personal use only
+            debugMode = false; // For debugging purposes only
 
             const panels = Array.from(document.querySelectorAll('.panel-33'));
             const container = panels.find(panel => panel.querySelector('h2') && panel.querySelector('h2').textContent.includes('SIGNAL'));
@@ -35,7 +35,7 @@ enableLowSignalInterpolation = true;
             document.getElementById('signal-meter-small-canvas').style.display = 'inline-block';
 
             // Add tooltip
-            signalMeter.classList.add("tooltip");
+            signalMeter.classList.add('tooltip');
             signalMeter.setAttribute('data-tooltip', 'Click to toggle show/hide S-Meter.');
 
             const ctx = signalMeter.getContext('2d');
@@ -43,7 +43,7 @@ enableLowSignalInterpolation = true;
             signalMeter.height = 12;
 
             const backgroundImage = new Image();
-            backgroundImage.src = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAgAAAAAYCAMAAAC7vLUXAAAAB3RJTUUH6AUbFjAAvtaFkAAAAAlwSFlzAAAK8AAACvABQqw0mAAAAE5QTFRFAP8A/wAA/2Bg////////////AP8A/wAA////////////////////////////AP8A/wAA////////////////////////AP8A/2Bg////SV+9OwAAABd0Uk5TAAAAABAgMDAwQFBgcH+PkZGfr7/P3++KEr+hAAAEHUlEQVRo3u2a23rbIBCE0w60WtDKRhySef8X7QUodhMdm+RzW5uLXDi/1ws7XgbkJ2ghmTs8xl2Op55l0MBiH2txnwKIdAAC+8da3LMAHuNuBaBk8A8HcL8CwECS+dEG7lYAMG5IfGwE9ysAABg5fijMj9Ppx9PM+Kde3zHPn+fzz287xj/BNRM4AoD/oABOz8+nupTvX1/i/47Xa9an5+fTHgGcX17Om9D3v5mrAji/vJwnAXB04gv9QwD3KYAukSQHPLaA+9wCAFHtP3oP+PQ/jB3z/PY/jWsT+OEhcgxXPXD30ImIyO43GKljv6qN3/MdMDWFDdap1rWwqitHK+OmMOscgDaTVa7N2Wyv7Zv8PkcANpIHcJNIMu7mIw/xwjp09xsKybLlgiQzttzLYiVMJMkAwK/m3JUpQ781t34P1+YsQFides1vvMT7FAG4kvMRAQT2MAcePzD8QQcYuLcpmVIENi0/D6MCUEbGmrvNxSxSPUygh2Wy0JlKKAEgF4FN7BY5mdK3JVCxxSlbB/AMxozv5j6FG2p++hrvUwQQRxOPCGAcANj9xnP/d/mqqnl3x/D0ALrlfKj1DyMMIwA/J14qgJRaqKq/XOYFYKMH4OkWuVcBxGKo2OJ0Wv9UDGDfneobVtOH+td4nyKADjgkgKtl31VLeuvEHAuvuxvAhDKtCqADGCFUAGbu2uQiU0dtCzKwm+8ArRPaRW4SgKMDFVvckCGuA1ArnMo85ughfYdLvM8ygQcFIDrsbwDCQLIcemJlSjwgxbbHLthVZVTVuriTWOIyBaRiG/FWhqoaqaoCeB2LxzznVQODqq+NjLrJxZRIhibQN+W4YMq+VA8wxbuRAHxk2u/RmCykFPM1DQDIHEQXbIw2R8lVAVxTCFwqLHjxp0NidAtcbFiEFrsigAsX294+K4CrcCxaPcCNBQCgZ9ht6kzbML+kAdRDTHaxzP5PRBhEpJa9r1m8FcA1FegBlDQnABEJnE6oJtDPc51Iz16ks5P92ODQdQCQU3Myv5fjgmld9JJf491OAEgHd40jP1o61AAAwADLj0Om3Z0RwmpgwyJV649I03b5ZQ9gGBe5umkrY4yROXbr3FSF0pxMzkseYGoQU7xbCMDU5ctld69wB2t6rAF0sQfQL5vSKwGgZAA6x1aq1b+GMyXPnwIcPapZX+JqxXycBLDO1S+0KREjLSDvBDqdAkoCYJleP/cmHWBkEBd3H+5sKV502aR/uAEkqmhZjt+uzsAIKEfpZ1kVAD2TqqqHKcXL3O/tRAGYXFR8pixyVu1v0trgBo7iEh2Eybn87k5jCqcTN8W7iQBMIFn2H+67TDKaL2oAQBdJxu27YEYAA8lk1y8tGVvS/epHZoct7uoYus4N02WmL2SRle9G41q8X1rg2uxvcVCaAAAAAElFTkSuQmCC';
+            backgroundImage.src = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAgAAAAAYCAMAAAC7vLUXAAAAB3RJTUUH6AUcBgQzO92MuAAAAAlwSFlzAAAK8AAACvABQqw0mAAAAE5QTFRFAP8A/wAA/2Bg////////////AP8A/wAA////////////////////////////AP8A/wAA////////////////////////AP8A/2Bg////SV+9OwAAABd0Uk5TAAAAABAgMDAwQFBgcH+PkZGfr7/P3++KEr+hAAAEIUlEQVRo3u2ay3rbOAyF0zlkK5CCEooX57z/i86C1MRNRF3cL5m2NhdeyL9gEDgCQcpP0EIyD3iMuxxPI8ukgcU+YnGfAoh0AALHRyzuWQCPcbcCUDL4RwdwvwLARJL5UQbuVgAwbkp8LAT3KwAAmDmfuu378/P3p5XxR10/MM8fLy8/vh0YfwTXaQJnAPA9AVwuq5efL5fnGsqP13v873G9ev18uTwfEcDL6+vLLvTP78xVAby8vr70BMDZiS/0DwHcpwCGRJKc8FgC7nMJAER1PHsO+PQ3jAPz/PY3ja0m8PQQOYernjhrGERE5PANRuo4rmLjj2jeVBd2WKdaY2FVN7ZSxi1mtjkAbSabXJuz2Y/tjn+3CcBG8gRuEknGw3zkKV5Yhx6+oZAsfo/KjM330s2EiSQZAPhNn4eyeOj35jYe4dqcBQibU6/+zX17NwnAlZzPCCBwhDnxuoHhhgow8WhRMqUIbOq//6ICUEbG6rvNxXSpESbQwzJZ6EomlACQi8AmDl1OFvdtCVTsccpWATyDMfOHuS/mpuqfdu3dJIA4m3hGAPMEwB5vNI8/y1dZzYcrhqcHMPT9odYPRhhGAH5NvFQAKTVTVX+5rAvARg/A03W5/wQQi6Fij9Ml/qkYwH7YxTesug/1XXs3CWAATgngKuyHcklvnZhz5vVwAVhQpk0BDAAjhArArB2TvMnUUVtAJg7rFaBVQtvlFgE4OlCxx00Z4gYANcOprGOOHjIO6Nu7tQk8KQDR6XgBEAaS5dQbKlPiCSm2NbbTriqjqtbgLmKJfQpIxTbivQxVNVJVBfA6F491zqsGBlVfCxl1l4spkQxNoO/S8YYpx1J7gHX/vkwAPjId79GYLKQU8zkFAMicRDttjLaOkpsCuKYQ2Ess+NafTonRdbjYsAgtdkMAb1xsa/uqAK7MsWjtAf5nAQAYGQ43daYtmJ9SAOomJrtYVr8TEQYRqWkfqxfvBXBNBXoAJa0FWEQClx2qCfTr3CAychQZ7NJ+7HAYBgDIqXUyP6fjDdMa9JI7/n2lAJBOrhpn/qR0qgAAgAH677+W1Z0RwtrAhi5V849I01b5fg9gGLtcXbSVMcbIHIdtbslCaZ1Mzr0eYCkQPXtfIQBTw5fL4VrhTub0XAEY4ghg7DelVwJAyQB0ja1Uy381Z0pe3wU4etRmvcfVjPm4CGCbqw+0KREzLSAfBLrsAkoCYJm6v/slFWBmEBcPb+5sKV6036T/cgFIVNHSt9+OzsAIKGcZV1kVACOTqqqHKcXL2v/rRAGYXFR8pnQ5q/Ynae1wE2dxiQ7C5Fz+cKaxmNOF69n7EgGYQLIc39wPmWQ0n1QAgCGSjPtnwYwAJpLJbh9aMjanx82fzA573NU2dJublsNMX8giG89G4zr2/gV4NNtVw6gakwAAAABJRU5ErkJggg==';
             backgroundImage.onload = function() {
                 ctx.drawImage(backgroundImage, 0, 0, signalMeter.width, signalMeter.height);
             };
@@ -102,7 +102,7 @@ enableLowSignalInterpolation = true;
 
                 if (!(/Mobi|Android/i.test(navigator.userAgent)) && isAtMaxWidth && window.innerHeight > 864) {
                     if (isOutsideField) {
-                        signalMeter.style.margin = '10px 0 0 ' + margin;
+                        signalMeter.style.margin = '9px 0 0 ' + margin;
                     } else {
                         signalMeter.style.margin = '0 0 0 ' + margin;
                     }
@@ -124,18 +124,18 @@ enableLowSignalInterpolation = true;
                 localStorage.setItem('signalMeterSmallVisibility', signalMeter.style.opacity);
             });
 
-            // Add hover effect for 50% opacity when opacity is 0%
+            // Add hover effect for opacity when opacity is 0%
             signalMeter.addEventListener('mouseover', function() {
                 const currentOpacity = signalMeter.style.opacity;
                 if (currentOpacity === '0') {
-                    signalMeter.style.opacity = '0.15';
+                    signalMeter.style.opacity = '0.2';
                 }
             });
 
             // Remove hover effect when mouse leaves
             signalMeter.addEventListener('mouseleave', function() {
                 const currentOpacity = signalMeter.style.opacity;
-                if (currentOpacity === '0.15') {
+                if (currentOpacity === '0.2') {
                     signalMeter.style.opacity = '0';
                 }
             });
@@ -159,17 +159,17 @@ enableLowSignalInterpolation = true;
 
         // Calculate the needle position
         const maxPosition = (signalMeter.width + 8) / 100;
-
-        const normalizedStrength = ((signalValue + 37) / (132)) * 100;
+        const normalizedStrength = ((signalValue + 35) / (132)) * 100;
         needlePosition = Math.min(normalizedStrength * maxPosition, 256);
 
-        const normalizedStrengthHighest = ((signalValueHighest + 37) / (132)) * 100;
+        // Calculate the peak needle position
+        const normalizedStrengthHighest = ((signalValueHighest + 35) / (132)) * 100;
         needlePositionHighest = Math.min(normalizedStrengthHighest * maxPosition, 256);
 
         // Low signal interpolation
         if (enableLowSignalInterpolation) {
-        var sRepValue = 72; // Value in px of the TEF noise floor
-        var sIntValue = 24; // Value in px of the iterpolated noise floor
+        var sRepValue = 72; // Value in px of the reported TEF noise floor
+        var sIntValue = 24; // Value in px of the interpolated noise floor
         var sMaxValue = 86; // Value in px where signal begins to deviate
             if (needlePosition < sMaxValue) { needlePosition = sIntValue + (needlePosition - sRepValue) * (sMaxValue - sIntValue) / (sMaxValue - sRepValue); }
             if (needlePositionHighest < sMaxValue) { needlePositionHighest = sIntValue + (needlePositionHighest - sRepValue) * (sMaxValue - sIntValue) / (sMaxValue - sRepValue); }
@@ -180,13 +180,12 @@ enableLowSignalInterpolation = true;
         needlePositionHighest = Math.max(needlePositionHighest, 9);
 
         // Image signal locations in pixels:
-        // 0, 20 | 1, 32 | 2, 44 | 3, 56 | 4, 68 | 5, 80 | 6, 92 | 7, 104 | 8, 116 | 9, 128
-        // +10, 148 | +20, 168 | +30, 188 | +40, 208 | +50, 228 | +60, 248
+        // 0, 16 | 1, 28 | 2, 40 | 3, 52 | 4, 64 | 5, 76 | 6, 88 | 7, 100 | 8, 112 | 9, 124 | +10, 144 | +20, 164 | +30, 184 | +40, 204 | +50, 224 | +60, 244
         if (debugMode) { console.log('normalizedStrength: ' + Math.round(normalizedStrength), '|| needlePosition: ' + Math.round(needlePosition), '|| signalStrength: ' + (signalStrength).toFixed(1), '|| signalStrengthHighest: ' + (signalStrengthHighest).toFixed(1)); }
 
         ctx.beginPath();
         ctx.moveTo(8, 0); // Start from the top left corner
-        ctx.lineTo(Math.min((needlePositionHighest + 4), signalMeter.width), 0); // Move horizontally to the right up to half width
+        ctx.lineTo(Math.min((needlePositionHighest), signalMeter.width), 0); // Move horizontally to the right up to half width
         ctx.strokeStyle = '#333538'; // Grey
         ctx.lineWidth = 8;
         ctx.stroke();
@@ -194,7 +193,7 @@ enableLowSignalInterpolation = true;
         // Draw the first half of the needle in green
         ctx.beginPath();
         ctx.moveTo(8, 0); // Start from the top left corner
-        ctx.lineTo(Math.min(needlePosition, signalMeter.width / 2) + 4, 0); // Move horizontally to the right up to half width
+        ctx.lineTo(Math.min(needlePosition, (signalMeter.width / 2) - 4), 0); // Move horizontally to the right up to half width
         ctx.strokeStyle = '#08B818'; // Green
         if (debugMode) { if (needlePosition < sMaxValue) { ctx.strokeStyle = '#08FF18'; } }
         ctx.lineWidth = 8;
@@ -202,8 +201,8 @@ enableLowSignalInterpolation = true;
 
         // Draw the second half of the needle in red
         ctx.beginPath();
-        ctx.moveTo((signalMeter.width / 2) + 4, 0); // Start from the top middle
-        ctx.lineTo(Math.max((signalMeter.width / 2) + 4, needlePosition + 4), 0); // Move horizontally to the right from half width
+        ctx.moveTo((signalMeter.width / 2) - 4, 0); // Start from the top middle
+        ctx.lineTo(Math.max((signalMeter.width / 2) - 4, needlePosition), 0); // Move horizontally to the right from half width
         ctx.strokeStyle = '#E01808'; // Red
         ctx.lineWidth = 8;
         ctx.stroke();
