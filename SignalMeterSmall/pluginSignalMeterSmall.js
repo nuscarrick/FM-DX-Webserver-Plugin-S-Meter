@@ -52,8 +52,8 @@ enableLowSignalInterpolation = true;
                 // Store current signal strength in variable
                 const signalStrengthText = document.getElementById('data-signal') ? document.getElementById('data-signal').textContent : '0';
                 const signalStrengthDecimalText = document.getElementById('data-signal-decimal') ? document.getElementById('data-signal-decimal').textContent : '0';
+                signalStrength = parseFloat(signalStrengthText) + (signalStrengthText >= 0 ? parseFloat(signalStrengthDecimalText) : -parseFloat(signalStrengthDecimalText));
                 const textContent = localStorage.getItem('signalUnit');
-                if (textContent === 'dbm') { signalStrength = parseFloat(signalStrengthText) - parseFloat(signalStrengthDecimalText); } else { signalStrength = parseFloat(signalStrengthText) + parseFloat(signalStrengthDecimalText); }
                 signalStrength += (textContent === 'dbm' ? 120 : textContent === 'dbuv' ? 11.25 : 0);
 
                 // Store peak signal strength in variable
