@@ -1,5 +1,5 @@
 /*
-    Signal Meter Small v1.1.2 by AAD
+    Signal Meter Small v1.1.3 by AAD
     https://github.com/AmateurAudioDude/FM-DX-Webserver-Plugin-S-Meter
     https://github.com/NO2CW/FM-DX-Webserver-analog-signal-meter
 */
@@ -52,8 +52,8 @@ enableLowSignalInterpolation = true;
                 // Store current signal strength in variable
                 const signalStrengthText = document.getElementById('data-signal') ? document.getElementById('data-signal').textContent : '0';
                 const signalStrengthDecimalText = document.getElementById('data-signal-decimal') ? document.getElementById('data-signal-decimal').textContent : '0';
-                signalStrength = parseFloat(signalStrengthText) - parseFloat(signalStrengthDecimalText);
                 const textContent = localStorage.getItem('signalUnit');
+                if (textContent === 'dbm') { signalStrength = parseFloat(signalStrengthText) - parseFloat(signalStrengthDecimalText); } else { signalStrength = parseFloat(signalStrengthText) + parseFloat(signalStrengthDecimalText); }
                 signalStrength += (textContent === 'dbm' ? 120 : textContent === 'dbuv' ? 11.25 : 0);
 
                 // Store peak signal strength in variable
