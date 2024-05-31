@@ -1,5 +1,5 @@
 /*
-    Signal Meter Small v1.1.3 by AAD
+    Signal Meter Small v1.1.4 by AAD
     https://github.com/AmateurAudioDude/FM-DX-Webserver-Plugin-S-Meter
     https://github.com/NO2CW/FM-DX-Webserver-analog-signal-meter
 */
@@ -19,6 +19,8 @@ enableLowSignalInterpolation = true;
             signalMeter.id = 'signal-meter-small-canvas';
             signalMeter.style.width = '256px';
             signalMeter.style.height = '12px';
+            // Hacky solution to prevent cropped canvas caused by #wrapper transform property, and other elements
+            signalMeter.style.transform = 'translate(0, 0.1%)';
             // Inside or outside SIGNAL field
             if (isOutsideField) {
                 offset = -128;
