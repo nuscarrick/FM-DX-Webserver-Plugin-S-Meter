@@ -18,6 +18,10 @@ This plugin displays a signal meter below the signal data.
 
 Simple calibration of `sRepValue` variable: Disconnect antenna and find the quietest noise floor. Adjust value of variable for meter to read just below S1.
 
+v1.1.4
+------
+* Fix for some cases of canvas being cropped
+
 v1.1.3
 ------
 * Corrected decimal place calculations for all signal units
