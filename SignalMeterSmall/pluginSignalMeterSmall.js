@@ -20,7 +20,6 @@ enableLowSignalInterpolation = true;
             signalMeter.style.width = '256px';
             signalMeter.style.height = '13px';
             signalMeter.style.imageRendering = 'pixelated';
-            signalMeter.style.imageRendering = 'crisp-edges';
             // Inside or outside SIGNAL field
             if (isOutsideField) {
                 offset = -128;
