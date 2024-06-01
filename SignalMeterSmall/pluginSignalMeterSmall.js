@@ -242,14 +242,14 @@ function checkWeatherPlugin() {
             //console.log("Displayed height is", isHeightOdd ? "odd." : "even.");
             //console.log("Displayed width is", isWidthOdd ? "odd." : "even.");
 
-            // If height or width is odd, increase both height and width by 1 pixel
-            if (isHeightOdd || isWidthOdd) {
+            // If height is odd, increase both height and width by 1 pixel
+            if (isHeightOdd) {
                 const newHeight = isHeightOdd ? displayedHeight + 1 : displayedHeight;
                 const newWidth = isWidthOdd ? displayedWidth + 1 : displayedWidth;
 
                 // Apply new height and width to the image
-                weatherImage.style.height = newHeight + "px";
-                weatherImage.style.width = newWidth + "px";
+                weatherImage.setAttribute("width", newHeight + "px");
+                weatherImage.setAttribute("height", newHeight + "px");
 
                 //console.log("Image height and width increased by 1 pixel to become even.");
             } else {
