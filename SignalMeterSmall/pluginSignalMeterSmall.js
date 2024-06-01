@@ -18,9 +18,9 @@ enableLowSignalInterpolation = true;
             const signalMeter = document.createElement('canvas');
             signalMeter.id = 'signal-meter-small-canvas';
             signalMeter.style.width = '256px';
-            signalMeter.style.height = '12px';
-            // Hacky solution to prevent cropped canvas caused by #wrapper transform property, and other elements
-            signalMeter.style.transform = 'translate(0, 0.1%)';
+            signalMeter.style.height = '13px';
+            signalMeter.style.imageRendering = 'pixelated';
+            signalMeter.style.imageRendering = 'crisp-edges';
             // Inside or outside SIGNAL field
             if (isOutsideField) {
                 offset = -128;
@@ -42,13 +42,15 @@ enableLowSignalInterpolation = true;
 
             const ctx = signalMeter.getContext('2d');
             signalMeter.width = 256;
-            signalMeter.height = 12;
+            signalMeter.height = 13;
 
             const backgroundImage = new Image();
-            backgroundImage.src = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAgAAAAAYCAMAAAC7vLUXAAAAB3RJTUUH6AUcBgQzO92MuAAAAAlwSFlzAAAK8AAACvABQqw0mAAAAE5QTFRFAP8A/wAA/2Bg////////////AP8A/wAA////////////////////////////AP8A/wAA////////////////////////AP8A/2Bg////SV+9OwAAABd0Uk5TAAAAABAgMDAwQFBgcH+PkZGfr7/P3++KEr+hAAAEIUlEQVRo3u2ay3rbOAyF0zlkK5CCEooX57z/i86C1MRNRF3cL5m2NhdeyL9gEDgCQcpP0EIyD3iMuxxPI8ukgcU+YnGfAoh0AALHRyzuWQCPcbcCUDL4RwdwvwLARJL5UQbuVgAwbkp8LAT3KwAAmDmfuu378/P3p5XxR10/MM8fLy8/vh0YfwTXaQJnAPA9AVwuq5efL5fnGsqP13v873G9ev18uTwfEcDL6+vLLvTP78xVAby8vr70BMDZiS/0DwHcpwCGRJKc8FgC7nMJAER1PHsO+PQ3jAPz/PY3ja0m8PQQOYernjhrGERE5PANRuo4rmLjj2jeVBd2WKdaY2FVN7ZSxi1mtjkAbSabXJuz2Y/tjn+3CcBG8gRuEknGw3zkKV5Yhx6+oZAsfo/KjM330s2EiSQZAPhNn4eyeOj35jYe4dqcBQibU6/+zX17NwnAlZzPCCBwhDnxuoHhhgow8WhRMqUIbOq//6ICUEbG6rvNxXSpESbQwzJZ6EomlACQi8AmDl1OFvdtCVTsccpWATyDMfOHuS/mpuqfdu3dJIA4m3hGAPMEwB5vNI8/y1dZzYcrhqcHMPT9odYPRhhGAH5NvFQAKTVTVX+5rAvARg/A03W5/wQQi6Fij9Ml/qkYwH7YxTesug/1XXs3CWAATgngKuyHcklvnZhz5vVwAVhQpk0BDAAjhArArB2TvMnUUVtAJg7rFaBVQtvlFgE4OlCxx00Z4gYANcOprGOOHjIO6Nu7tQk8KQDR6XgBEAaS5dQbKlPiCSm2NbbTriqjqtbgLmKJfQpIxTbivQxVNVJVBfA6F491zqsGBlVfCxl1l4spkQxNoO/S8YYpx1J7gHX/vkwAPjId79GYLKQU8zkFAMicRDttjLaOkpsCuKYQ2Ess+NafTonRdbjYsAgtdkMAb1xsa/uqAK7MsWjtAf5nAQAYGQ43daYtmJ9SAOomJrtYVr8TEQYRqWkfqxfvBXBNBXoAJa0FWEQClx2qCfTr3CAychQZ7NJ+7HAYBgDIqXUyP6fjDdMa9JI7/n2lAJBOrhpn/qR0qgAAgAH677+W1Z0RwtrAhi5V849I01b5fg9gGLtcXbSVMcbIHIdtbslCaZ1Mzr0eYCkQPXtfIQBTw5fL4VrhTub0XAEY4ghg7DelVwJAyQB0ja1Uy381Z0pe3wU4etRmvcfVjPm4CGCbqw+0KREzLSAfBLrsAkoCYJm6v/slFWBmEBcPb+5sKV6036T/cgFIVNHSt9+OzsAIKGcZV1kVACOTqqqHKcXL2v/rRAGYXFR8pnQ5q/Ynae1wE2dxiQ7C5Fz+cKaxmNOF69n7EgGYQLIc39wPmWQ0n1QAgCGSjPtnwYwAJpLJbh9aMjanx82fzA573NU2dJublsNMX8giG89G4zr2/gV4NNtVw6gakwAAAABJRU5ErkJggg==';
+            backgroundImage.src = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAQAAAAAMCAMAAAC6GZObAAAAB3RJTUUH6AYBCTY2SEie6QAAAAlwSFlzAAAK8AAACvABQqw0mAAAAOpQTFRFAP8Af/9/v/+//wAA/39//6+v/7+/////////////////////////////////////////////////////////////AP8Af/9//wAA/39/////////////////////////////////////////////////////////////////////////////f/9/////////////////////////////////////////////////////////////////////////////AP8A/zAw////////////////////////////////////////////h5eLSwAAAE50Uk5TAAAAAAAAAAAECAwQFBgcHyAjJygrLzAwMDAzNzs/Q0dLT1NXW19jZ2tvc3d7f3+Dh4uPk5ebn6Onq6+zt7u/w8fIyMvP09fb3+Pn6+/z2M/URgAAAkRJREFUSMfllVt3mkAUhUlNuwcBJabkBlTUJoRgNJJmEITxglFim///d/pQoyNOXE2Wecp5OvPNXmdm7TkHpPZ8xGR83pDyY7iVz2xAdxE6+MwGQGv9tsV7p6cHq/iY/MvWmefnh1uxf/aNMyCzjx9/rNe3t+t8PJYkaZXzfA+5JEnj8cGWAZNJkXzdLyuVSpPJIWeAHafXr3THyYm0io/Jtw04Oyttxf4Zb8Dr0yF3GkJuxpEh4j1KLQFWKaW+SN9IqFZATg9mQlWOkC7zofUH/Inl+9QtMuB6S6dSStVaHFU367U3dDsMiMKOkCeVCybiI10vCzDRdU9UqDJV6n0eMFwGOZlVWg8cagZkYEVO9fEF2R14V3Km84zqgBkyFJgd6DoZGWa6RDoF3B65M3ndDgPKl2IDYLTbopdmD0FZqCeZImwkaM9cUXtqf0duxCBzDlWBYS0Hhstfte1RW9GcVF4zzU5aJklVhgJr0vBGmQL58sBWYmsDL/I53U4D8JoB9eBOZMCdfHX/ljrxIHxar3y6oA3kVri68BIFHnKA6cuHTaa0duRH2ppZdB713CswFJjlEuoNV/V60ZxarEvCFlfvHQYQF1iIWroJI/r/BkDZIZXh5ggAuTJDjfEo8ICsQubyegSaGno/eUZ19Bn74xeYdQHvOpeVGTcC9034N7zuHR3wK2GiDTntT823NFIcZxsfTQNAjm7KUQPOM2N1J2PeC1KqqGf9ocKzmvzPrQI7moYj1R2Omi83rAHVLBypvO4vLbqZlIEXd4UAAAAASUVORK5CYII=';
             backgroundImage.onload = function() {
-                ctx.drawImage(backgroundImage, 0, 0, signalMeter.width, signalMeter.height);
+                ctx.drawImage(backgroundImage, 0, 0, signalMeter.width, signalMeter.height - 1);
             };
+
+            checkWeatherPlugin();
 
             setInterval(function() {
                 // Store current signal strength in variable
@@ -149,7 +151,7 @@ enableLowSignalInterpolation = true;
         ctx.clearRect(0, 0, signalMeter.width, signalMeter.height);
 
         // Redraw the background image
-        ctx.drawImage(backgroundImage, 0, 0, signalMeter.width, signalMeter.height);
+        ctx.drawImage(backgroundImage, 0, 0, signalMeter.width, signalMeter.height - 1);
 
         // Draw the dark gray line in the background
         ctx.beginPath();
@@ -212,3 +214,57 @@ enableLowSignalInterpolation = true;
 
     initAnalogMeterSmall();
 })();
+
+function checkWeatherPlugin() {
+    // If the Weather plugin image is an odd number, this creates blurry canvases and needs correcting
+    let intervalCount = 0;
+
+    function checkForImage() {
+        const weatherImage = document.getElementById("weatherImage");
+
+        // Check if the image element exists
+        if (weatherImage) {
+            clearInterval(interval);
+
+            // Get the computed style of the image
+            const imageStyle = getComputedStyle(weatherImage);
+
+            // Calculate the displayed height and width based on scaling or other CSS properties
+            const displayedHeight = weatherImage.naturalHeight * parseFloat(imageStyle.getPropertyValue('height')) / 100;
+            const displayedWidth = weatherImage.naturalWidth * parseFloat(imageStyle.getPropertyValue('width')) / 100;
+
+            // Check if the displayed height and width are odd or even
+            const isHeightOdd = displayedHeight % 2 !== 0;
+            const isWidthOdd = displayedWidth % 2 !== 0;
+
+            // Log the displayed height and width, and whether they're odd or even to the console
+            //console.log("Displayed image height:", displayedHeight);
+            //console.log("Displayed image width:", displayedWidth);
+            //console.log("Displayed height is", isHeightOdd ? "odd." : "even.");
+            //console.log("Displayed width is", isWidthOdd ? "odd." : "even.");
+
+            // If height or width is odd, increase both height and width by 1 pixel
+            if (isHeightOdd || isWidthOdd) {
+                const newHeight = isHeightOdd ? displayedHeight + 1 : displayedHeight;
+                const newWidth = isWidthOdd ? displayedWidth + 1 : displayedWidth;
+
+                // Apply new height and width to the image
+                weatherImage.style.height = newHeight + "px";
+                weatherImage.style.width = newWidth + "px";
+
+                //console.log("Image height and width increased by 1 pixel to become even.");
+            } else {
+                //console.error("Canvas element not found.");
+            }
+        } else {
+            intervalCount++;
+            if (intervalCount < 10) {
+                setTimeout(checkForImage, 1000);
+            } else {
+                //console.error("Image element not found after 10 seconds.");
+            }
+        }
+    }
+
+    const interval = setTimeout(checkForImage, 1000);
+}
