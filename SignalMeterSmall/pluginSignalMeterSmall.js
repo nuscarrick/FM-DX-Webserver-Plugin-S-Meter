@@ -215,7 +215,7 @@ enableLowSignalInterpolation = true;
 })();
 
 function checkWeatherPlugin() {
-    // If the Weather plugin image is an odd number, this creates blurry canvases and needs correcting
+    // If the Weather plugin image height is an odd number, this creates blurry canvases and needs correcting
     let intervalCount = 0;
 
     function checkForImage() {
