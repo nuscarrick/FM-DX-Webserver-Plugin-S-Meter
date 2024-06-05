@@ -171,7 +171,19 @@ enableLowSignalInterpolation = true;
 
         // Low signal interpolation
         if (enableLowSignalInterpolation) {
-        var sRepValue = 68; // Value in px of the reported TEF noise floor
+        /*
+        [58 : -126 dBm / -6 dBf / -17 dBuV]
+        [60 : -125 dBm / -5 dBf / -16 dBuV]
+        [62 : -124 dBm / -4 dBf / -15 dBuV]
+        [64 : -123 dBm / -3 dBf / -14 dBuV]
+        [66 : -122 dBm / -2 dBf / -13 dBuV]
+        [68 : -121 dBm / -1 dBf / -12 dBuV]
+        [70 : -120 dBm /  0 dBf / -11 dBuV]
+        [72 : -119 dBm /  1 dBf / -10 dBuV]
+        [74 : -118 dBm /  2 dBf /  -9 dBuV]
+        [76 : -117 dBm /  3 dBf /  -8 dBuV]
+        */
+        var sRepValue = 72; // Value in px of the reported TEF noise floor 
         var sIntValue = 24; // Value in px of the interpolated noise floor
         var sMaxValue = 86; // Value in px where signal begins to deviate
             if (needlePosition < sMaxValue) { needlePosition = sIntValue + (needlePosition - sRepValue) * (sMaxValue - sIntValue) / (sMaxValue - sRepValue); }
