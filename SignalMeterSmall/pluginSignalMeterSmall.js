@@ -183,7 +183,7 @@ enableLowSignalInterpolation = true;
         [74 : -118 dBm /  2 dBf /  -9 dBuV]
         [76 : -117 dBm /  3 dBf /  -8 dBuV]
         */
-        var sRepValue = 72; // Value in px of the reported TEF noise floor 
+        var sRepValue = 68; // Value in px of the reported TEF noise floor 
         var sIntValue = 24; // Value in px of the interpolated noise floor
         var sMaxValue = 86; // Value in px where signal begins to deviate
             if (needlePosition < sMaxValue) { needlePosition = sIntValue + (needlePosition - sRepValue) * (sMaxValue - sIntValue) / (sMaxValue - sRepValue); }
