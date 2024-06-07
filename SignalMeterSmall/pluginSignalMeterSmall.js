@@ -101,9 +101,9 @@ enableLowSignalInterpolation = true;
                 }
 
                 // Attempt to detect maximised window
-                var isAtMaxWidth = screen.availWidth - window.innerWidth === 0;
+                //var isAtMaxWidth = screen.availWidth - window.innerWidth === 0;
 
-                if (!(/Mobi|Android/i.test(navigator.userAgent)) && isAtMaxWidth && window.innerHeight > 864) {
+                if (!(/Mobi|Android/i.test(navigator.userAgent)) && window.innerWidth > 768 && window.innerHeight > 860) {
                     if (isOutsideField) {
                         signalMeter.style.margin = '9px 0 0 ' + margin;
                     } else {
