@@ -10,7 +10,7 @@ This plugin displays a signal meter below the signal data.
 * Restart FM-DX-Webserver if required
 * Login to Adminstrator Panel and enable plugin
 
-## Options
+## Options (found at the beginning of `pluginSignalMeterSmall.js`)
 
 `isOutsideField`: Where the S-Meter is to be displayed, within the SIGNAL field, or below it.
 
