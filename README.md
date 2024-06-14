@@ -5,7 +5,7 @@ This plugin displays a signal meter below the signal data.
 Displayed outside or within the SIGNAL container, your choice.
 
 ![outside_true](https://github.com/AmateurAudioDude/FM-DX-Webserver-Plugin-S-Meter/assets/168192910/b79fcfb9-3071-45e8-8042-cc9cf64b6b26)   
-![outside_false](https://github.com/AmateurAudioDude/FM-DX-Webserver-Plugin-S-Meter/assets/168192910/c0591eb4-b470-48f4-885c-2d757f1051d4)
+![outside_false](https://github.com/AmateurAudioDude/FM-DX-Webserver-Plugin-S-Meter/assets/168192910/dfcd57c4-dfc8-416e-b0c2-6754fed6e8cc)
 
 * [Download the latest zip file](https://github.com/AmateurAudioDude/FM-DX-Webserver-Plugin-S-Meter/archive/refs/heads/main.zip)
 * Transfer `SignalMeterSmall` folder, and `SignalMeterSmall.js` to FM-DX-Webserver `plugins` folder
