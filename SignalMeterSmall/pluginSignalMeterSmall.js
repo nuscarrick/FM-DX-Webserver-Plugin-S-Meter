@@ -6,17 +6,18 @@
 
 //////////////////////////////////////////////////
 
-isOutsideField = true;
-enableSquelch = true;
-enableLowSignalInterpolation = true;
+const isOutsideField = true;
+const enableSquelch = true;
+const enableLowSignalInterpolation = true;
 
 //////////////////////////////////////////////////
 
 // Set initial stream volume and other variables
 streamVolume = 1;
-valueSquelchVolume = 1;
-minMeterPosition = 8;
-activeSquelch = false;
+var valueSquelchVolume = 1;
+var activeSquelch = false;
+var isEnabledSquelch = enableSquelch;
+const minMeterPosition = 8;
 // Global variables for other plugins
 pluginSignalMeterSmall = true;
 pluginSignalMeterSmallSquelchActive = false;
@@ -97,7 +98,7 @@ function updateVolume() {
 
             // Draw squelch marker
             function drawMarker() {
-                if (enableSquelch && markerPositionMin && showMarker) {
+                if (isEnabledSquelch && markerPositionMin && showMarker) {
                     markerCtx.clearRect(0, 0, markerCanvas.width, markerCanvas.height);
                     markerCtx.beginPath();
                     markerCtx.moveTo(markerPosition, 0);
@@ -108,7 +109,7 @@ function updateVolume() {
                 }
             }
 
-            if (enableSquelch) {
+            if (isEnabledSquelch) {
                 let isDragging = false;
                 let offsetX = 0;
 
@@ -254,17 +255,17 @@ function updateVolume() {
                     markerCanvas.width = parseInt(width);
                     if (isOutsideField) { signalMeter.style.margin = '4px 0 0 ' + margin; }
                     if (isOutsideField) { markerCanvas.style.margin = '4px 0 0 ' + margin; } else { markerCanvas.style.margin = '4px 0 0 -' + width; }
-                    if (enableSquelch) { drawMarker(markerPosition); }
+                    if (isEnabledSquelch) { drawMarker(markerPosition); }
                 } else {
                     width = '256px';
                     margin = offset + 'px';
                     signalMeter.style.width = width;
                     signalMeter.width = parseInt(width);
-                    if (enableSquelch) { markerCanvas.style.width = width; }
-                    if (enableSquelch) { markerCanvas.width = parseInt(width); }
+                    if (isEnabledSquelch) { markerCanvas.style.width = width; }
+                    if (isEnabledSquelch) { markerCanvas.width = parseInt(width); }
                     if (isOutsideField) { signalMeter.style.margin = '2px 0 0 ' + margin; }
-                    if (isOutsideField) { markerCanvas.style.margin = '2px 0 0 ' + margin; } else if (enableSquelch) { markerCanvas.style.margin = '2px 0 0 -' + width; }
-                    if (enableSquelch) { drawMarker(markerPosition); }
+                    if (isOutsideField) { markerCanvas.style.margin = '2px 0 0 ' + margin; } else if (isEnabledSquelch) { markerCanvas.style.margin = '2px 0 0 -' + width; }
+                    if (isEnabledSquelch) { drawMarker(markerPosition); }
                 }
 
                 if (!(/Mobi|Android/i.test(navigator.userAgent)) && window.innerWidth > 768 && window.innerHeight > 860) {
@@ -354,10 +355,10 @@ var needlePosition = minMeterPosition + 1;
 function checkSquelch() {
     // Disable during playback initiation to avoid volume change conflicts
     if ($('.playbutton.bg-gray').length > 0) {
-        enableSquelch = false;
+        isEnabledSquelch = false;
         markerPosition = minMeterPosition + 1;
     } else {
-        enableSquelch = true;
+        isEnabledSquelch = true;
     }
     // Override any manual volume changes
     if (streamVolume !== valueSquelchVolume) { activeSquelch = false; }
@@ -377,7 +378,7 @@ function muteVolume(muteValue) {
     Stream.Volume = muteValue;
 }
 
-if (enableSquelch) { setInterval(checkSquelch, 1000); }
+if (isEnabledSquelch) { setInterval(checkSquelch, 1000); }
 
     function drawSignalMeter(signalValue, signalValueHighest, ctx, backgroundImage, signalMeter) {
         // Clear the canvas before redrawing
