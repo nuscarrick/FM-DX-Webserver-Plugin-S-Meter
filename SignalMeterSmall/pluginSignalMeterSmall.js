@@ -361,7 +361,7 @@ function checkSquelch() {
         isEnabledSquelch = true;
     }
     // Override any manual volume changes
-    if (streamVolume !== valueSquelchVolume) { activeSquelch = false; }
+    if (streamVolume !== valueSquelchVolume) { activeSquelch = false; pluginSignalMeterSmallSquelchActive = false; }
     valueSquelchVolume = streamVolume || 1;
     // Set volume to 0 if squelch is activated
     if ((markerPosition - needlePosition > 0) && !activeSquelch) {
@@ -538,13 +538,12 @@ function checkWeatherPlugin() {
             }
         } else {
             intervalCount++;
-            if (intervalCount < 10) {
+            if (intervalCount < 15) {
                 setTimeout(checkForImage, 1000);
             } else {
-                //console.error("Image element not found after 10 seconds.");
+                //console.error("Image element not found after 15 seconds.");
             }
         }
     }
-
     const interval = setTimeout(checkForImage, 1000);
 }
