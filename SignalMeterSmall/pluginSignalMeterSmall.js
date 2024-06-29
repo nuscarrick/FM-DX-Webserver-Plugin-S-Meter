@@ -29,7 +29,7 @@ function updateVolume() {
 }
 
 (function() {
-    function initAnalogMeterSmall() {
+    function initSignalMeterSmall() {
         document.addEventListener('DOMContentLoaded', function() {
             debugMode = false; // For debugging purposes only
 
@@ -354,43 +354,43 @@ function updateVolume() {
         });
     }
 
-function removeTooltips() {
-    var tooltips = document.querySelectorAll('.tooltiptext');
-    tooltips.forEach(function(tooltip) {
-        tooltip.parentNode.removeChild(tooltip);
-    });
-}
-
-var needlePosition = minMeterPosition + 1;
-
-// Functions to check squelch level and set volume
-function checkSquelch() {
-    // Disable during playback initiation to avoid volume change conflicts
-    if ($('.playbutton.bg-gray').length > 0) {
-        isEnabledSquelch = false;
-        markerPosition = minMeterPosition + 1;
-    } else {
-        isEnabledSquelch = true;
+    function removeTooltips() {
+        var tooltips = document.querySelectorAll('.tooltiptext');
+        tooltips.forEach(function(tooltip) {
+            tooltip.parentNode.removeChild(tooltip);
+        });
     }
-    // Override any manual volume changes
-    if (streamVolume !== valueSquelchVolume) { activeSquelch = false; pluginSignalMeterSmallSquelchActive = false; }
-    valueSquelchVolume = streamVolume || 1;
-    // Set volume to 0 if squelch is activated
-    if ((markerPosition - needlePosition > 0) && !activeSquelch) {
-        muteVolume(0);
-        activeSquelch = true; pluginSignalMeterSmallSquelchActive = true;
-    } else if ((markerPosition - needlePosition < 0) && activeSquelch) {
-        muteVolume(valueSquelchVolume);
-        activeSquelch = false; pluginSignalMeterSmallSquelchActive = false;
+
+    var needlePosition = minMeterPosition + 1;
+
+    // Functions to check squelch level and set volume
+    function checkSquelch() {
+        // Disable during playback initiation to avoid volume change conflicts
+        if ($('.playbutton.bg-gray').length > 0) {
+            isEnabledSquelch = false;
+            markerPosition = minMeterPosition + 1;
+        } else {
+            isEnabledSquelch = true;
+        }
+        // Override any manual volume changes
+        if (streamVolume !== valueSquelchVolume) { activeSquelch = false; pluginSignalMeterSmallSquelchActive = false; }
+        valueSquelchVolume = streamVolume || 1;
+        // Set volume to 0 if squelch is activated
+        if ((markerPosition - needlePosition > 0) && !activeSquelch) {
+            muteVolume(0);
+            activeSquelch = true; pluginSignalMeterSmallSquelchActive = true;
+        } else if ((markerPosition - needlePosition < 0) && activeSquelch) {
+            muteVolume(valueSquelchVolume);
+            activeSquelch = false; pluginSignalMeterSmallSquelchActive = false;
+        }
     }
-}
 
-function muteVolume(muteValue) {
-    setTimeout(() => Stream.Volume = muteValue, 100);
-    Stream.Volume = muteValue;
-}
+    function muteVolume(muteValue) {
+        setTimeout(() => Stream.Volume = muteValue, 100);
+        Stream.Volume = muteValue;
+    }
 
-if (isEnabledSquelch) { setInterval(checkSquelch, 1000); }
+    if (isEnabledSquelch) { setInterval(checkSquelch, 1000); }
 
     function drawSignalMeter(signalValue, signalValueHighest, ctx, backgroundImage, signalMeter) {
         // Clear the canvas before redrawing
@@ -474,7 +474,7 @@ if (isEnabledSquelch) { setInterval(checkSquelch, 1000); }
         ctx.stroke();
     }
 
-    initAnalogMeterSmall();
+    initSignalMeterSmall();
 })();
 
 // Tooltip
