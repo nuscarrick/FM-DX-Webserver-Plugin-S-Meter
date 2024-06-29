@@ -139,6 +139,12 @@ function updateVolume() {
 
                         // Start tracking mouse movement globally
                         window.addEventListener('mousemove', mouseMoveHandler);
+
+                        // Remove tooltip after first mouse click
+                        markerCanvas.classList.remove('tooltip-meter');
+                        markerCanvas.removeAttribute('data-tooltip');
+                        initMeterTooltips();
+                        removeTooltips();
                     }
                 });
 
@@ -205,6 +211,12 @@ function updateVolume() {
                 // Event listener to prevent webpage scrolling while scrolling over the canvas
                 markerCanvas.addEventListener('wheel', function(event) {
                     event.preventDefault(); // Prevent default scrolling behaviour
+
+                    // Remove tooltip after first mouse click
+                    markerCanvas.classList.remove('tooltip-meter');
+                    markerCanvas.removeAttribute('data-tooltip');
+                    initMeterTooltips();
+                    removeTooltips();
                 });
             }
 
@@ -308,14 +320,7 @@ function updateVolume() {
                 markerCanvas.classList.remove('tooltip-meter');
                 markerCanvas.removeAttribute('data-tooltip');
                 initMeterTooltips();
-                function removeTooltips() {
-                    var tooltips = document.querySelectorAll('.tooltiptext');
-                    tooltips.forEach(function(tooltip) {
-                        tooltip.parentNode.removeChild(tooltip);
-                    });
-                }
                 removeTooltips();
-                setTimeout(removeTooltips, 500);
 
                 if (isMouseDownWithin) {
                     const rect = signalMeter.getBoundingClientRect();
@@ -348,6 +353,13 @@ function updateVolume() {
             });
         });
     }
+
+function removeTooltips() {
+    var tooltips = document.querySelectorAll('.tooltiptext');
+    tooltips.forEach(function(tooltip) {
+        tooltip.parentNode.removeChild(tooltip);
+    });
+}
 
 var needlePosition = minMeterPosition + 1;
 
