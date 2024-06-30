@@ -105,6 +105,7 @@ function updateVolume() {
                     markerCtx.lineTo(markerPosition, markerCanvas.height);
                     markerCtx.strokeStyle = '#FEEE33'; // Marker color
                     markerCtx.lineWidth = 2;
+                    markerCtx.globalAlpha = 0.8;
                     markerCtx.stroke();
                 }
             }
