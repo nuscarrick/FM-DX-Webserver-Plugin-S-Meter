@@ -78,7 +78,7 @@ function updateVolume() {
 
             // Add tooltip
             markerCanvas.classList.add('tooltip-meter');
-            markerCanvas.setAttribute('data-tooltip', 'Click "S" to toggle show/hide S-Meter.');
+            markerCanvas.setAttribute('data-tooltip', `Click 'S' to toggle show/hide S-Meter.<br><strong>Squelch doesn't affect other listeners.</strong>`);
             markerCanvas.style.cursor = 'pointer';
             initMeterTooltips();
 
@@ -498,7 +498,7 @@ function initMeterTooltips() {
             var tooltipHeight = tooltip.outerHeight();
             posX -= tooltipWidth / 2;
             posY -= tooltipHeight + 10;
-            tooltip.css({ top: posY, left: posX, opacity: .98 }); // Set opacity to 1
+            tooltip.css({ top: posY, left: posX, opacity: .99 }); // Set opacity to 1
         }, 500));
     }, function() {
         // Clear the timeout if the mouse leaves before the delay completes
