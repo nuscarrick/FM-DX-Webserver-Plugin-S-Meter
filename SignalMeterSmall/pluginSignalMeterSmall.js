@@ -78,7 +78,7 @@ function updateVolume() {
             document.getElementById('signal-meter-small-marker-canvas').style.display = 'inline-block';
 
             // Add tooltip
-            let firstTooltip = `Click 'S' to toggle show/hide S-Meter.${isEnabledSquelch ? '<br><strong>Squelch doesn\'t affect other listeners.</strong>' : ''}`;
+            let firstTooltip = `Double-click 'S' to toggle show/hide S-Meter.${isEnabledSquelch ? '<br><strong>Squelch doesn\'t affect other listeners.</strong>' : ''}`;
             markerCanvas.classList.add('tooltip-meter');
             markerCanvas.setAttribute('data-tooltip', firstTooltip);
             markerCanvas.style.cursor = 'pointer';
@@ -320,32 +320,25 @@ function updateVolume() {
             markerCanvas.addEventListener('mousedown', function(event) {
                 const rect = signalMeter.getBoundingClientRect();
                 const x = event.clientX - rect.left;
-                if (x <= 6) {
-                    isMouseDownWithin = true;
-                } else {
-                    isMouseDownWithin = false;
-                }
+                isMouseDownWithin = x <= 6;
             });
 
-            // Add click event listener to toggle visibility only if mouse down was within 6 pixels
-            markerCanvas.addEventListener('click', function() {
-                // Remove tooltip after first mouse click
-                markerCanvas.classList.remove('tooltip-meter');
-                markerCanvas.removeAttribute('data-tooltip');
-                initMeterTooltips();
-                removeTooltips();
+            let isMouseDoubleClickWithin = false;
 
-                if (isMouseDownWithin) {
-                    const rect = signalMeter.getBoundingClientRect();
-                    const x = event.clientX - rect.left;
-                    if (x <= 6) {
-                        const currentOpacity = signalMeter.style.opacity;
-                        signalMeter.style.opacity = currentOpacity === '1' ? '0' : '1';
-                        // Hide squelch marker
-                        markerCanvas.style.opacity = currentOpacity === '1' ? '0' : '1';
-                        showMarker = true;
-                        localStorage.setItem('signalMeterSmallVisibility', signalMeter.style.opacity);
-                    }
+            // Add dblclick event listener to track double click
+            markerCanvas.addEventListener('dblclick', function(event) {
+                const rect = signalMeter.getBoundingClientRect();
+                const x = event.clientX - rect.left;
+                isMouseDoubleClickWithin = x <= 6;
+
+                // Handle the double click action
+                if (isMouseDoubleClickWithin) {
+                    const currentOpacity = signalMeter.style.opacity;
+                    signalMeter.style.opacity = currentOpacity === '1' ? '0' : '1';
+                    markerCanvas.style.opacity = currentOpacity === '1' ? '0' : '1'; // Hide squelch marker
+                    showMarker = true;
+                    localStorage.setItem('signalMeterSmallVisibility', signalMeter.style.opacity);
+                    isMouseDoubleClickWithin = false; // Reset double click
                 }
             });
 
