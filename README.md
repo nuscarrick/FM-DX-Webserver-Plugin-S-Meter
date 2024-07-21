@@ -20,6 +20,10 @@ Displayed outside or within the SIGNAL container, your choice.
 
 Simple calibration of `sRepValue` variable: Disconnect antenna and find the quietest noise floor. Adjust value of variable for meter to read just below S1.
 
+v1.2.1
+------
+* FM-DX Webserver v1.2.4 compatibility
+
 v1.2.0
 ------
 * Added client-side squelch
