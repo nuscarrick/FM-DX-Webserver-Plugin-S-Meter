@@ -78,8 +78,9 @@ function updateVolume() {
             document.getElementById('signal-meter-small-marker-canvas').style.display = 'inline-block';
 
             // Add tooltip
+            let firstTooltip = `Click 'S' to toggle show/hide S-Meter.${isEnabledSquelch ? '<br><strong>Squelch doesn\'t affect other listeners.</strong>' : ''}`;
             markerCanvas.classList.add('tooltip-meter');
-            markerCanvas.setAttribute('data-tooltip', `Click 'S' to toggle show/hide S-Meter.<br><strong>Squelch doesn't affect other listeners.</strong>`);
+            markerCanvas.setAttribute('data-tooltip', firstTooltip);
             markerCanvas.style.cursor = 'pointer';
             initMeterTooltips();
 
