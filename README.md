@@ -22,7 +22,7 @@ Simple calibration of `sRepValue` variable: Disconnect antenna and find the quie
 
 v1.2.1
 ------
-* FM-DX Webserver v1.2.4 compatibility
+* Fix for FM-DX Webserver v1.2.4 compatibility issues
 
 v1.2.0
 ------
