@@ -1,5 +1,5 @@
 /*
-    Signal Meter Small v1.2.0 by AAD
+    Signal Meter Small v1.2.1 by AAD
     https://github.com/AmateurAudioDude/FM-DX-Webserver-Plugin-S-Meter
     https://github.com/NO2CW/FM-DX-Webserver-analog-signal-meter
 */
@@ -40,13 +40,14 @@ function updateVolume() {
             signalMeter.id = 'signal-meter-small-canvas';
             signalMeter.style.width = '256px';
             signalMeter.style.height = '13px';
-            signalMeter.style.imageRendering = 'pixelated';
+            // Setting of pixelated was required if height was an odd number
+            signalMeter.style.imageRendering = 'auto';
             // Configure squelch marker
             const markerCanvas = document.createElement('canvas');
             markerCanvas.id = 'signal-meter-small-marker-canvas';
             markerCanvas.style.width = '256px';
             markerCanvas.style.height = '13px';
-            markerCanvas.style.imageRendering = 'pixelated';
+            markerCanvas.style.imageRendering = 'auto';
             markerCanvas.style.top = signalMeter.style.top;
             markerCanvas.style.left = signalMeter.style.left;
             // Inside or outside SIGNAL field
@@ -259,7 +260,6 @@ function updateVolume() {
                             break;
                         default:
                             width = '256px';
-                            //offset = -128;
                             margin = offset + 'px';
                     }
                     signalMeter.style.width = width;
@@ -283,11 +283,20 @@ function updateVolume() {
 
                 if (!(/Mobi|Android/i.test(navigator.userAgent)) && window.innerWidth > 768 && window.innerHeight > 860) {
                     if (isOutsideField) {
-                        signalMeter.style.margin = '9px 0 0 ' + margin;
-                        markerCanvas.style.margin = '9px 0 0 ' + margin;
+                        if (document.getElementById('wrapper-outer')) {
+                            // v1.2.4 compatibility
+                            signalMeter.style.margin = '4px 0 0 ' + margin; // 4px is already the default
+                            markerCanvas.style.margin = '4px 0 0 ' + margin; // 4px is already the default
+                        } else {
+                            signalMeter.style.margin = '9px 0 0 ' + margin;
+                            markerCanvas.style.margin = '9px 0 0 ' + margin;
+                        }
                     } else {
                         signalMeter.style.margin = '0 0 0 ' + margin;
-                        markerCanvas.style.margin = '0 0 0 -256px';
+                        if (window.innerWidth > 768 && window.innerHeight < 860) {
+                            // If isOutsideField equals false and height is below 860px
+                            markerCanvas.style.margin = '0 0 0 -256px';
+                        }
                     }
                 }
 
