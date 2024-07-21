@@ -6,7 +6,7 @@
 
 //////////////////////////////////////////////////
 
-const isOutsideField = false;
+const isOutsideField = true;
 const enableSquelch = true;
 const enableLowSignalInterpolation = true;
 
