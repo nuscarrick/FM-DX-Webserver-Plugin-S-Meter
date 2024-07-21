@@ -6,7 +6,7 @@
 
 //////////////////////////////////////////////////
 
-const isOutsideField = true;
+const isOutsideField = false;
 const enableSquelch = true;
 const enableLowSignalInterpolation = true;
 
@@ -296,6 +296,8 @@ function updateVolume() {
                         if (window.innerWidth > 768 && window.innerHeight < 860) {
                             // If isOutsideField equals false and height is below 860px
                             markerCanvas.style.margin = '0 0 0 -256px';
+                        } else {
+                            markerCanvas.style.margin = '0 0 0 -' + width;
                         }
                     }
                 }
