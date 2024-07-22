@@ -16,9 +16,11 @@ Displayed outside or within the SIGNAL container, your choice.
 
 `isOutsideField`: Where the S-Meter is to be displayed, within the SIGNAL field, or below it.
 
+`enableSquelch`: Server-side squelch that mutes all signals below the set threshold. Squelch settings does not affect other listeners.
+
 `enableLowSignalInterpolation`: Because approximately -120dBm is the reported noise floor with TEF receivers, the S-Meter will never fall below this level (approx. S4). This attempts to calculate and correct those values based on the signals below -114dBm (just below S6), where true signal deviation from reported signal begins.
 
-Simple calibration of `sRepValue` variable: Disconnect antenna and find the quietest noise floor. Adjust value of variable for meter to read just below S1.
+`sRepValue` variable calibration: Disconnect antenna and find the quietest noise floor. Adjust value of variable for meter to read just below S1.
 
 v1.2.1
 ------
