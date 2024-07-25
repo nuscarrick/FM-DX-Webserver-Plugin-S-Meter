@@ -1,5 +1,5 @@
 /*
-    Signal Meter Small v1.2.1 by AAD
+    Signal Meter Small v1.2.2 by AAD
     https://github.com/AmateurAudioDude/FM-DX-Webserver-Plugin-S-Meter
     https://github.com/NO2CW/FM-DX-Webserver-analog-signal-meter
 */
@@ -68,7 +68,6 @@ function updateVolume() {
             container.appendChild(markerCanvas);
 
             markerPosition = minMeterPosition + 1; // Initial marker position
-            // Squelch marker to never fall outside the region
             markerPositionMin = '';
             markerPositionMax = '';
             showMarker = true;
@@ -117,24 +116,37 @@ function updateVolume() {
                 let offsetX = 0;
 
                 // Event listener to start dragging
-                markerCanvas.addEventListener('mousedown', function(event) {
+                markerCanvas.addEventListener('mousedown', startDragging);
+                markerCanvas.addEventListener('touchstart', startDragging);
+
+                function startDragging(event) {
+                    event.preventDefault(); // Prevent default touch behavior
+
                     const savedOpacity = localStorage.getItem('signalMeterSmallVisibility') ? localStorage.getItem('signalMeterSmallVisibility') : 1;
                     // Return if signal meter is hidden
                     showMarker = true;
                     if (savedOpacity != 1) { showMarker = false; markerPosition = minMeterPosition + 1; return; }
                     // Disable middle click from setting marker
-                    if (event.button === 1) {
-                        event.preventDefault(); // Prevent default middle click behaviour
+                    if (event.button === 1 || (event.touches && event.touches.length > 1)) {
+                        event.preventDefault(); // Prevent default middle click behaviour or multi-touch
                     } else {
                         const rect = markerCanvas.getBoundingClientRect();
-                        let mouseX = event.clientX - rect.left; // X position relative to canvas
-                        markerPosition = mouseX;
+                        let mouseX, touchX;
+
+                        if (event.type === 'mousedown') {
+                            mouseX = event.clientX - rect.left; // X position relative to canvas
+                        } else if (event.type === 'touchstart') {
+                            touchX = event.touches[0].clientX - rect.left; // X position relative to canvas for touch
+                        }
+
+                        markerPosition = mouseX || touchX;
                         markerPosition = Math.max(markerPosition, markerPositionMin);
                         markerPosition = Math.min(markerPosition, markerPositionMax);
 
                         drawMarker(markerPosition); // Set marker to initial click position
-                        if (mouseX >= markerPositionMin && mouseX <= markerPositionMax) { isDragging = true; }
-                        offsetX = event.clientX - rect.left - markerPosition; // Offset from click position to marker position
+                        offsetX = (mouseX || touchX) - markerPosition; // Offset from click position to marker position
+
+                        isDragging = true;
 
                         // Prevent text highlight in Chrome
                         document.body.style.userSelect = 'none';
@@ -142,14 +154,15 @@ function updateVolume() {
 
                         // Start tracking mouse movement globally
                         window.addEventListener('mousemove', mouseMoveHandler);
+                        window.addEventListener('touchmove', touchMoveHandler);
 
-                        // Remove tooltip after first mouse click
+                        // Remove tooltip after first tap/click
                         markerCanvas.classList.remove('tooltip-meter');
                         markerCanvas.removeAttribute('data-tooltip');
                         initMeterTooltips();
                         removeTooltips();
                     }
-                });
+                }
 
                 // Mouse move handler function
                 function mouseMoveHandler(event) {
@@ -165,8 +178,25 @@ function updateVolume() {
                     }
                 }
 
+                // Touch move handler function
+                function touchMoveHandler(event) {
+                    if (isDragging) {
+                        const rect = markerCanvas.getBoundingClientRect();
+                        let touchX = event.touches[0].clientX - rect.left; // X position relative to canvas
+                        markerPosition = touchX - offsetX;
+
+                        // Ensure marker stays within canvas bounds
+                        markerPosition = Math.max(markerPosition, markerPositionMin);
+                        markerPosition = Math.min(markerPosition, markerPositionMax);
+                        drawMarker(markerPosition);
+                    }
+                }
+
                 // Event listener to stop dragging
-                window.addEventListener('mouseup', function(event) {
+                window.addEventListener('mouseup', stopDragging);
+                window.addEventListener('touchend', stopDragging);
+
+                function stopDragging(event) {
                     if (isDragging) {
                         isDragging = false;
 
@@ -175,8 +205,9 @@ function updateVolume() {
 
                         // Stop tracking mouse movement globally
                         window.removeEventListener('mousemove', mouseMoveHandler);
+                        window.removeEventListener('touchmove', touchMoveHandler);
                     }
-                });
+                }
 
                 function onMouseMove(event) {
                     const rect = markerCanvas.getBoundingClientRect();
@@ -215,7 +246,7 @@ function updateVolume() {
                 markerCanvas.addEventListener('wheel', function(event) {
                     event.preventDefault(); // Prevent default scrolling behaviour
 
-                    // Remove tooltip after first mouse click
+                    // Remove tooltip after first tap/click
                     markerCanvas.classList.remove('tooltip-meter');
                     markerCanvas.removeAttribute('data-tooltip');
                     initMeterTooltips();
