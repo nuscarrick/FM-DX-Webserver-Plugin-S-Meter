@@ -1,4 +1,4 @@
-# S-Meter plugin for FM-DX-Webserver
+# S-Meter plugin for FM-DX Webserver
 
 This plugin displays a signal meter below the signal data.
 
@@ -9,18 +9,40 @@ Displayed outside or within the SIGNAL container, your choice.
 
 * [Download the latest zip file](https://github.com/AmateurAudioDude/FM-DX-Webserver-Plugin-S-Meter/archive/refs/heads/main.zip)
 * Transfer `SignalMeterSmall` folder, and `SignalMeterSmall.js` to FM-DX-Webserver `plugins` folder
-* Restart FM-DX-Webserver if required
+* Restart FM-DX Webserver if required
 * Login to Adminstrator Panel and enable plugin
 
-## Options (found at the beginning of `pluginSignalMeterSmall.js`)
+## Options
 
-`isOutsideField`: Where the S-Meter is to be displayed, within the SIGNAL field, or below it.
+#### Open `pluginSignalMeterSmall.js` with a text editor to find available options at the beginning of the file.
+
+`isOutsideField`: Where the S-Meter is to be displayed, within the SIGNAL container, or below it.
 
 `enableSquelch`: Server-side squelch that mutes all signals below the set threshold. Squelch settings does not affect other listeners.
 
-`enableLowSignalInterpolation`: Because approximately -120dBm is the reported noise floor with TEF receivers, the S-Meter will never fall below this level (approx. S4). This attempts to calculate and correct those values based on the signals below -114dBm (just below S6), where true signal deviation from reported signal begins.
+`enableLowSignalInterpolation`: Because approximately -123dBm is the reported noise floor with TEF receivers, the S-Meter will never fall below this level (approx. S4). This attempts to calculate and correct those values based on the signals below -114dBm (just below S6), where true signal deviation from reported signal begins.
 
-`sRepValue` variable calibration: Disconnect antenna and find the quietest noise floor. Adjust value of variable for meter to read just below S1.
+`squelchMutePercentage`: Volume percentage while squelch is active. Recommended setting is either 0 or 1.
+
+`squelchNeedleSmall`: More discreet needle that might be harder to see.
+
+`meterBeginsAtS0`: Limits the meter's range from **S0** to **S9+60**.
+
+`useThemeColors`: Background uses the webpage's theme instead of the default grey style.
+
+`radioNoiseFloor`: The reported dBm signal reading with no antenna connected, used to calibrate enableLowSignalInterpolation.
+
+
+v1.3.0
+------
+* Slight frames per second increase
+* Minor blur effect to match recent FM-DX Webserver version
+* Background colour and squelch needle match theme
+* White canvas text inverted for dark text themes with bright backgrounds
+* Squelch volume internal setting
+* Strict "S0-S9+60" meter range internal setting
+* Small squelch needle display internal setting
+* Minor bug fixes
 
 v1.2.2
 ------
