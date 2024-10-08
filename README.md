@@ -16,7 +16,7 @@ Displayed outside or within the SIGNAL container, your choice.
 
 #### Open `pluginSignalMeterSmall.js` with a text editor to find available options at the beginning of the file.
 
-`isOutsideField`: Where the S-Meter is to be displayed, within the SIGNAL container, or below it.
+`OutsideField`: Where the S-Meter is to be displayed, within the SIGNAL container, or below it.
 
 `enableSquelch`: Server-side squelch that mutes all signals below the set threshold. Squelch settings does not affect other listeners.
 
@@ -32,6 +32,10 @@ Displayed outside or within the SIGNAL container, your choice.
 
 `radioNoiseFloor`: The reported dBm signal reading with no antenna connected, used to calibrate enableLowSignalInterpolation.
 
+
+v1.3.1
+------
+* Added support for PEAKMETER plugin element
 
 v1.3.0
 ------
