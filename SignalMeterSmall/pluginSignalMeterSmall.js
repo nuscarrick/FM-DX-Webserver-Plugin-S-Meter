@@ -1,5 +1,5 @@
 /*
-    Signal Meter Small v1.3.0 by AAD
+    Signal Meter Small v1.3.1 by AAD
     https://github.com/AmateurAudioDude/FM-DX-Webserver-Plugin-S-Meter
     https://github.com/NO2CW/FM-DX-Webserver-analog-signal-meter
 */
@@ -8,7 +8,7 @@
 
   //////////////////////////////////////////////////
 
-  const isOutsideField = true;                // Display meter outside the SIGNAL container
+  const OutsideField = true;                  // Display meter outside the SIGNAL container
   const enableSquelch = true;                 // Allow squelch function to be used
   const enableLowSignalInterpolation = true;  // Attempts to calculate and correct low noise floor reading
   const squelchMutePercentage = 0;            // Set to 1 if 0 causes audio stuttering during active squelch
@@ -16,6 +16,7 @@
   const meterBeginsAtS0 = true;               // Strictly S0-S9+60 meter range
   const useThemeColors = true;                // Background matches theme
   const radioNoiseFloor = -123;               // The reported dBm signal reading with no antenna connected used to calibrate enableLowSignalInterpolation
+  const meterLocation = 'auto';               // Set to 'auto' for default position, or force with 'signal', 'peakmeter'
 
   //////////////////////////////////////////////////
 
@@ -47,11 +48,26 @@
   function initSignalMeterSmall() {
       document.addEventListener('DOMContentLoaded', function() {
           const panels = Array.from(document.querySelectorAll('.panel-33'));
-          const container = panels.find(panel => panel.querySelector('h2') && panel.querySelector('h2').textContent.includes('SIGNAL'));
-
+          var isOutsideField = OutsideField;
+          var existsPeakmeter = panels.find(panel => panel.querySelector('h2') && panel.querySelector('h2').textContent.includes('PEAKMETER'));
+          var existsSignal = panels.find(panel => panel.querySelector('h2') && panel.querySelector('h2').textContent.includes('SIGNAL'));
+          let container;
           const signalMeter = document.createElement('canvas');
+          
+          if (meterLocation === 'signal') {
+            container = existsSignal;
+          } else if (!existsPeakmeter && meterLocation === 'auto') {
+            container = existsSignal;
+          } else if (existsPeakmeter && (meterLocation === 'auto' || meterLocation === 'peakmeter')) {
+            container = existsPeakmeter;
+            isOutsideField = false;
+            signalMeter.style.top = '-168px';
+          } else {
+            container = existsSignal;
+          }
+
           signalMeter.id = 'signal-meter-small-canvas';
-          signalMeter.style.backdropFilter = 'blur(5px)'; // Blur used in FM-DX Webserver
+          if (!existsPeakmeter && meterLocation === 'auto') signalMeter.style.backdropFilter = 'blur(5px)'; // Blur used in FM-DX Webserver
           signalMeter.style.width = '256px';
           signalMeter.style.height = '13px';
           // Setting of pixelated was required if height was an odd number
@@ -285,6 +301,32 @@
           }
 
           setInterval(function() {
+              var windowWidth = window.innerWidth;
+              var windowHeight = window.innerHeight;
+              // PEAKMETER
+              if (meterLocation === 'signal' && existsPeakmeter) {
+                windowWidth = (window.innerWidth / 1.5).toFixed(0);
+                if (windowWidth < 769 && window.innerWidth > 768) windowWidth = 769;
+              }
+              if (existsPeakmeter && container === existsPeakmeter && windowWidth < 768) {
+                isOutsideField = true;
+                signalMeter.style.top = '-28px';
+                markerCanvas.style.top = '-28px';
+                offset = -128;
+                signalMeter.style.margin = '4px 0 0 ' + offset + 'px';
+                signalMeter.style.position = 'absolute';
+                markerCanvas.style.margin = '4px 0 0 ' + offset + 'px';
+                markerCanvas.style.position = 'absolute';
+              } else if (existsPeakmeter && container === existsPeakmeter && windowWidth > 768) {
+                isOutsideField = false;
+                signalMeter.style.top = '-168px';
+                markerCanvas.style.top = '-168px';
+                offset = 0;
+                signalMeter.style.margin = '4px 0 0 ' + offset + 'px';
+                signalMeter.style.position = 'relative';
+                markerCanvas.style.margin = '4px 0 0 -256px';
+                markerCanvas.style.position = 'relative';
+              }
               // Store current signal strength in variable
               const signalStrengthText = document.getElementById('data-signal') ? document.getElementById('data-signal').textContent : '0';
               const signalStrengthDecimalText = document.getElementById('data-signal-decimal') ? document.getElementById('data-signal-decimal').textContent : '0';
@@ -300,21 +342,21 @@
               // Resize if needed
               var width, margin;
 
-              if (window.innerWidth > 768) {
+              if (windowWidth > 768) {
                   switch (true) {
-                      case (window.innerWidth <= 880):
+                      case (windowWidth <= 880):
                           width = '192px';
                           if (isOutsideField) { margin = (offset + 32) + 'px'; }
                           break;
-                      case (window.innerWidth <= 928):
+                      case (windowWidth <= 928):
                           width = '208px';
                           if (isOutsideField) { margin = (offset + 24) + 'px'; }
                           break;
-                      case (window.innerWidth <= 976):
+                      case (windowWidth <= 976):
                           width = '224px';
                           if (isOutsideField) { margin = (offset + 16) + 'px'; }
                           break;
-                      case (window.innerWidth <= 1024):
+                      case (windowWidth <= 1024):
                           width = '240px';
                           if (isOutsideField) { margin = (offset + 8) + 'px'; }
                           break;
@@ -341,7 +383,7 @@
                   if (isEnabledSquelch) { drawMarker(markerPosition); }
               }
 
-              if (!(/Mobi|Android/i.test(navigator.userAgent)) && window.innerWidth > 768 && window.innerHeight > 860) {
+              if (!(/Mobi|Android/i.test(navigator.userAgent)) && windowWidth > 768 && windowHeight > 860) {
                   if (isOutsideField) {
                       if (document.getElementById('wrapper-outer')) {
                           // v1.2.4 compatibility
@@ -353,7 +395,7 @@
                       }
                   } else {
                       signalMeter.style.margin = '0 0 0 ' + margin;
-                      if (window.innerWidth > 768 && window.innerHeight < 860) {
+                      if (windowWidth > 768 && windowHeight < 860) {
                           // If isOutsideField equals false and height is below 860px
                           markerCanvas.style.margin = '0 0 0 -256px';
                       } else {
