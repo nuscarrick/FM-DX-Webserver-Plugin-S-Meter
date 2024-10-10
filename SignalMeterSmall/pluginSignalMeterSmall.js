@@ -61,7 +61,7 @@
           } else if (existsPeakmeter && (meterLocation === 'auto' || meterLocation === 'peakmeter')) {
             container = existsPeakmeter;
             isOutsideField = false;
-            signalMeter.style.top = '-168px';
+            signalMeter.style.top = '-50px';
           } else {
             container = existsSignal;
           }
