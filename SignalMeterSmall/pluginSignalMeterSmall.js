@@ -319,8 +319,8 @@
                 markerCanvas.style.position = 'absolute';
               } else if (existsPeakmeter && container === existsPeakmeter && windowWidth > 768) {
                 isOutsideField = false;
-                signalMeter.style.top = '-168px';
-                markerCanvas.style.top = '-168px';
+                signalMeter.style.top = '-50px';
+                markerCanvas.style.top = '-50px';
                 offset = 0;
                 signalMeter.style.margin = '4px 0 0 ' + offset + 'px';
                 signalMeter.style.position = 'relative';
