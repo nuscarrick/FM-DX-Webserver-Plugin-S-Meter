@@ -1,5 +1,5 @@
 /*
-    Signal Meter Small v1.3.1 by AAD
+    Signal Meter Small v1.3.2 by AAD
     https://github.com/AmateurAudioDude/FM-DX-Webserver-Plugin-S-Meter
     https://github.com/NO2CW/FM-DX-Webserver-analog-signal-meter
 */
