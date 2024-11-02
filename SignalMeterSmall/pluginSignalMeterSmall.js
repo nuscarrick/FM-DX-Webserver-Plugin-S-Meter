@@ -44,6 +44,7 @@
           var isOutsideField = OutsideField;
           var existsPeakmeter = panels.find(panel => panel.querySelector('h2') && panel.querySelector('h2').textContent.includes('PEAKMETER'));
           var existsSignal = panels.find(panel => panel.querySelector('h2') && panel.querySelector('h2').textContent.includes('SIGNAL'));
+          var offsetPeakmeter = -50;
           let container;
           const signalMeter = document.createElement('canvas');
           
@@ -54,7 +55,7 @@
           } else if (existsPeakmeter && (meterLocation === 'auto' || meterLocation === 'peakmeter')) {
             container = existsPeakmeter;
             isOutsideField = false;
-            signalMeter.style.top = '-50px';
+            signalMeter.style.top = offsetPeakmeter + 'px';
           } else {
             container = existsSignal;
           }
@@ -312,8 +313,8 @@
                 markerCanvas.style.position = 'absolute';
               } else if (existsPeakmeter && container === existsPeakmeter && windowWidth > 768) {
                 isOutsideField = false;
-                signalMeter.style.top = '-50px';
-                markerCanvas.style.top = '-50px';
+                signalMeter.style.top = offsetPeakmeter + 'px';
+                markerCanvas.style.top = offsetPeakmeter + 'px';
                 offset = 0;
                 signalMeter.style.margin = '4px 0 0 ' + offset + 'px';
                 signalMeter.style.position = 'relative';
