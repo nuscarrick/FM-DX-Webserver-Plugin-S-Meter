@@ -1,5 +1,5 @@
 /*
-    Signal Meter Small v1.3.2 by AAD
+    Signal Meter Small v1.3.3 by AAD
     https://github.com/AmateurAudioDude/FM-DX-Webserver-Plugin-S-Meter
     https://github.com/NO2CW/FM-DX-Webserver-analog-signal-meter
 */
@@ -25,8 +25,7 @@
   pluginSignalMeterSmallSquelchActive = false;
 
   // Set initial stream volume and other variables
-  streamVolume = 1;
-  var valueSquelchVolume = 1;
+  var valueSquelchVolume = newVolumeGlobal || 1;
   var activeSquelch = false;
   var isEnabledSquelch = enableSquelch;
   var minMeterPosition = 8;
@@ -35,12 +34,6 @@
   if (meterBeginsAtS0) {
     minMeterPosition += 7;
     maxMeterPosition = 11;
-  }
-
-  // updateVolume also exists in /js/3las/main.js
-  function updateVolume() {
-    streamVolume = $(this).val();
-    setTimeout(() => Stream.Volume = $(this).val(), 100);
   }
 
   const debugMode = false; // For debugging purposes only
@@ -480,8 +473,8 @@
           isEnabledSquelch = true;
       }
       // Override any manual volume changes
-      if (streamVolume !== valueSquelchVolume) { activeSquelch = false; pluginSignalMeterSmallSquelchActive = false; }
-      valueSquelchVolume = streamVolume || 1;
+      if (newVolumeGlobal !== valueSquelchVolume) { activeSquelch = false; pluginSignalMeterSmallSquelchActive = false; }
+      valueSquelchVolume = newVolumeGlobal || 1;
       // Set volume to 0 if squelch is activated
       if ((markerPosition - needlePosition > 0) && !activeSquelch) {
           muteVolume(squelchMutePercentage / 100);
