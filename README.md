@@ -33,6 +33,10 @@ Displayed outside or within the SIGNAL container, your choice.
 `radioNoiseFloor`: The reported dBm signal reading with no antenna connected, used to calibrate enableLowSignalInterpolation.
 
 
+v1.3.3
+------
+* Fix for squelch volume
+
 v1.3.2
 ------
 * Fix compatibility issue with latest PEAKMETER plugin
