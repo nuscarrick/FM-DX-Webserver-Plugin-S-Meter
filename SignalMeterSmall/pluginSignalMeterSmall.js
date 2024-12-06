@@ -1,7 +1,8 @@
 /*
-    Signal Meter Small v1.3.3 by AAD
+    Signal Meter Small v1.3.4 by AAD
     https://github.com/AmateurAudioDude/FM-DX-Webserver-Plugin-S-Meter
-    https://github.com/NO2CW/FM-DX-Webserver-analog-signal-meter
+
+    Original concept by Analog Signal Meter: https://github.com/NO2CW/FM-DX-Webserver-analog-signal-meter
 */
 
 (() => {
@@ -16,7 +17,7 @@
   const meterBeginsAtS0 = true;               // Strictly S0-S9+60 meter range
   const useThemeColors = true;                // Background matches theme
   const radioNoiseFloor = -123;               // The reported dBm signal reading with no antenna connected used to calibrate enableLowSignalInterpolation
-  const meterLocation = 'auto';               // Set to 'auto' for default position, or force with 'signal', 'peakmeter'
+  const meterLocation = 'auto';               // Set to 'auto' for default position, or force with 'signal', 'sdr-graph', or 'peakmeter'
 
   //////////////////////////////////////////////////
 
@@ -42,17 +43,98 @@
       document.addEventListener('DOMContentLoaded', function() {
           const panels = Array.from(document.querySelectorAll('.panel-33'));
           var isOutsideField = OutsideField;
-          var existsPeakmeter = panels.find(panel => panel.querySelector('h2') && panel.querySelector('h2').textContent.includes('PEAKMETER'));
+          var setMeterLocation = meterLocation;
+          if (localStorage.getItem("showPeakmeter") !== null && setMeterLocation === 'auto') {
+            setMeterLocation = (localStorage.getItem("showPeakmeter") === 'true') ? 'auto' : 'sdr-graph';
+          }
+          var existsPeakmeter;
+          if (setMeterLocation !== 'sdr-graph') existsPeakmeter = panels.find(panel => panel.querySelector('h2') && panel.querySelector('h2').textContent.includes('PEAKMETER'));
           var existsSignal = panels.find(panel => panel.querySelector('h2') && panel.querySelector('h2').textContent.includes('SIGNAL'));
           var offsetPeakmeter = -50;
           let container;
           const signalMeter = document.createElement('canvas');
-          
-          if (meterLocation === 'signal') {
+
+          // #####################################################################
+          // Code to move canvas to #sdr-graph
+          let lastSdrGraphState = null;  // Store the last state of #sdr-graph
+
+          function manageCanvasPosition() {
+              const sdrGraph = document.querySelector('#sdr-graph');
+              const smallCanvas = document.querySelector('#signal-meter-small-canvas');
+              const markerCanvas = document.querySelector('#signal-meter-small-marker-canvas');
+
+              // If no panel found with SIGNAL, return
+              if (!existsSignal) {
+                  console.log("Signal Meter Small: No SIGNAL panel found.");
+                  return;
+              }
+
+              const originalContainer = existsSignal;
+
+              if (!smallCanvas || !markerCanvas || !originalContainer || existsPeakmeter || !isOutsideField || (setMeterLocation !== 'sdr-graph' && setMeterLocation !== 'auto')) return;
+
+              const currentSdrGraphState = window.getComputedStyle(sdrGraph).display === 'block';
+
+              // Only perform if state of sdrGraph has changed
+              if (currentSdrGraphState !== lastSdrGraphState) {
+                  lastSdrGraphState = currentSdrGraphState;
+
+                  if (currentSdrGraphState) {
+                      // If sdrGraph is visible
+                      if (smallCanvas.parentElement !== sdrGraph.parentElement) {
+                          sdrGraph.parentElement.appendChild(smallCanvas);
+                          sdrGraph.parentElement.appendChild(markerCanvas);
+                          smallCanvas.style.position = 'absolute';
+                          markerCanvas.style.position = 'absolute';
+                          smallCanvas.style.top = '12px';
+                          markerCanvas.style.top = '12px';
+                          smallCanvas.style.left = '170px';
+                          markerCanvas.style.left = '170px';
+                          smallCanvas.offsetHeight;
+                          markerCanvas.offsetHeight;
+                          smallCanvas.style.boxShadow = '0px 0px 12px var(--color-2-transparent)';
+                          smallCanvas.style.background = 'var(--color-1-transparent)';
+                          smallCanvas.style.backdropFilter = '';
+                      }
+                  } else {
+                      // If sdrGraph is hidden
+                          if (smallCanvas.parentElement !== originalContainer) {
+                              originalContainer.appendChild(smallCanvas);
+                              originalContainer.appendChild(markerCanvas);
+                              smallCanvas.style.top = '';
+                              smallCanvas.style.left = '';
+                              markerCanvas.style.top = '';
+                              markerCanvas.style.left = '';
+                              markerCanvas.style.zIndex = '';
+                              smallCanvas.style.zIndex = '';
+                              smallCanvas.style.boxShadow = '';
+                              smallCanvas.style.background = '';
+                          }
+                  }
+              }
+          }
+
+          // Monitor changes in DOM
+          const observer = new MutationObserver(() => {
+              manageCanvasPosition();
+          });
+
+          // Start observing
+          observer.observe(document.body, {
+              childList: true,
+              subtree: true,
+              attributes: true,
+              attributeFilter: ['style', 'class', 'visibility', 'display']
+          });
+
+          setInterval(manageCanvasPosition, 1000);
+          // #####################################################################
+
+          if (setMeterLocation === 'signal') {
             container = existsSignal;
-          } else if (!existsPeakmeter && meterLocation === 'auto') {
+          } else if (!existsPeakmeter && (setMeterLocation === 'auto')) {
             container = existsSignal;
-          } else if (existsPeakmeter && (meterLocation === 'auto' || meterLocation === 'peakmeter')) {
+          } else if (existsPeakmeter && (setMeterLocation === 'auto' || setMeterLocation === 'peakmeter')) {
             container = existsPeakmeter;
             isOutsideField = false;
             signalMeter.style.top = offsetPeakmeter + 'px';
@@ -61,7 +143,7 @@
           }
 
           signalMeter.id = 'signal-meter-small-canvas';
-          if (!existsPeakmeter && meterLocation === 'auto') signalMeter.style.backdropFilter = 'blur(5px)'; // Blur used in FM-DX Webserver
+          if (!existsPeakmeter && setMeterLocation === 'auto') signalMeter.style.backdropFilter = 'blur(5px)'; // Blur used in FM-DX Webserver
           signalMeter.style.width = '256px';
           signalMeter.style.height = '13px';
           // Setting of pixelated was required if height was an odd number
@@ -298,7 +380,7 @@
               var windowWidth = window.innerWidth;
               var windowHeight = window.innerHeight;
               // PEAKMETER
-              if (meterLocation === 'signal' && existsPeakmeter) {
+              if (setMeterLocation === 'signal' && existsPeakmeter) {
                 windowWidth = (window.innerWidth / 1.5).toFixed(0);
                 if (windowWidth < 769 && window.innerWidth > 768) windowWidth = 769;
               }
