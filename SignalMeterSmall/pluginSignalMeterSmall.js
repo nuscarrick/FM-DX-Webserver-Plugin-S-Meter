@@ -86,14 +86,14 @@
                           sdrGraph.parentElement.appendChild(markerCanvas);
                           smallCanvas.style.position = 'absolute';
                           markerCanvas.style.position = 'absolute';
-                          smallCanvas.style.top = '12px';
-                          markerCanvas.style.top = '12px';
-                          smallCanvas.style.left = '170px';
-                          markerCanvas.style.left = '170px';
+                          smallCanvas.style.top = '10px';
+                          markerCanvas.style.top = '10px';
+                          smallCanvas.style.left = '172px';
+                          markerCanvas.style.left = '172px';
                           smallCanvas.offsetHeight;
                           markerCanvas.offsetHeight;
-                          smallCanvas.style.boxShadow = '0px 0px 12px var(--color-2-transparent)';
-                          smallCanvas.style.background = 'var(--color-1-transparent)';
+                          smallCanvas.style.boxShadow = '0px 0px 12px rgba(10, 10, 10, 0.4)';
+                          smallCanvas.style.background = 'rgba(10, 10, 10, 0.125)';
                           smallCanvas.style.backdropFilter = '';
                       }
                   } else {
