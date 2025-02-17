@@ -1,5 +1,5 @@
 /*
-    Signal Meter Small v1.3.4 by AAD
+    Signal Meter Small v1.3.5 by AAD
     https://github.com/AmateurAudioDude/FM-DX-Webserver-Plugin-S-Meter
 
     Original concept by Analog Signal Meter: https://github.com/NO2CW/FM-DX-Webserver-analog-signal-meter
@@ -60,6 +60,14 @@
 
           function manageCanvasPosition() {
               const sdrGraph = document.querySelector('#sdr-graph');
+              const sdrCanvasCheck = document.getElementById('sdr-graph');
+
+              let opacitySdrGraph;
+              let currentSdrGraphState;
+
+              // For Spectrum Graph v1.2.1 added visual effects, let's override with opacity status
+              if (sdrCanvasCheck) opacitySdrGraph = window.getComputedStyle(sdrCanvasCheck).opacity;
+
               const smallCanvas = document.querySelector('#signal-meter-small-canvas');
               const markerCanvas = document.querySelector('#signal-meter-small-marker-canvas');
 
@@ -73,7 +81,10 @@
 
               if (!smallCanvas || !markerCanvas || !originalContainer || existsPeakmeter || !isOutsideField || (setMeterLocation !== 'sdr-graph' && setMeterLocation !== 'auto')) return;
 
-              const currentSdrGraphState = window.getComputedStyle(sdrGraph).display === 'block';
+              currentSdrGraphState = window.getComputedStyle(sdrGraph).display === 'block';
+
+              // For Spectrum Graph v1.2.1 added visual effects, let's override with opacity status
+              if (opacitySdrGraph && opacitySdrGraph < 0.8) currentSdrGraphState = false;
 
               // Only perform if state of sdrGraph has changed
               if (currentSdrGraphState !== lastSdrGraphState) {
@@ -92,9 +103,9 @@
                           markerCanvas.style.left = '172px';
                           smallCanvas.offsetHeight;
                           markerCanvas.offsetHeight;
-                          smallCanvas.style.boxShadow = '0px 0px 12px rgba(10, 10, 10, 0.4)';
-                          smallCanvas.style.background = 'rgba(10, 10, 10, 0.125)';
-                          smallCanvas.style.backdropFilter = '';
+                          smallCanvas.style.boxShadow = '0px 0px 12px rgba(10, 10, 10, 0.25)';
+                          smallCanvas.style.background = 'rgba(10, 10, 10, 0.1)';
+                          smallCanvas.style.backdropFilter = 'blur(10px)';
                       }
                   } else {
                       // If sdrGraph is hidden
@@ -114,20 +125,21 @@
               }
           }
 
-          // Monitor changes in DOM
-          const observer = new MutationObserver(() => {
-              manageCanvasPosition();
-          });
+          setTimeout(() => {
+              // Monitor changes in DOM
+              const observer = new MutationObserver(() => {
+                  manageCanvasPosition();
+              });
 
-          // Start observing
-          observer.observe(document.body, {
-              childList: true,
-              subtree: true,
-              attributes: true,
-              attributeFilter: ['style', 'class', 'visibility', 'display']
-          });
+              // Start observing
+              observer.observe(document.body, {
+                  childList: true,
+                  subtree: true,
+                  attributes: true,
+                  attributeFilter: ['style', 'class', 'visibility', 'display']
+              });
+          }, 1000);
 
-          setInterval(manageCanvasPosition, 1000);
           // #####################################################################
 
           if (setMeterLocation === 'signal') {
@@ -465,7 +477,8 @@
                           // v1.2.4 compatibility
                           signalMeter.style.margin = '4px 0 0 ' + margin; // 4px is already the default
                           markerCanvas.style.margin = '4px 0 0 ' + margin; // 4px is already the default
-                      } else {
+                      } else if (document.querySelector('#wrapper-outer #wrapper .flex-container')) {
+                          // v1.3.4 and below compatibility
                           signalMeter.style.margin = '9px 0 0 ' + margin;
                           markerCanvas.style.margin = '9px 0 0 ' + margin;
                       }
