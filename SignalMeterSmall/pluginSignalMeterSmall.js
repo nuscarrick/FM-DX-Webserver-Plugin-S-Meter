@@ -17,7 +17,7 @@
   const meterBeginsAtS0 = true;               // Strictly S0-S9+60 meter range
   const useThemeColors = true;                // Background matches theme
   const radioNoiseFloor = -123;               // The reported dBm signal reading with no antenna connected used to calibrate enableLowSignalInterpolation
-  const meterLocation = 'auto';               // Set to 'auto' for default position, or force with 'signal', 'sdr-graph', or 'peakmeter'
+  const meterLocation = 'auto';               // Set to 'auto' for default position, or force with 'signal', 'sdr-graph', 'peakmeter', or 'auto-rotator'
 
   //////////////////////////////////////////////////
 
@@ -26,11 +26,11 @@
   pluginSignalMeterSmallSquelchActive = false;
 
   // Set initial stream volume and other variables
-  var valueSquelchVolume = newVolumeGlobal || 1;
-  var activeSquelch = false;
-  var isEnabledSquelch = enableSquelch;
-  var minMeterPosition = 8;
-  var maxMeterPosition = 0;
+  let valueSquelchVolume = newVolumeGlobal || 1;
+  let activeSquelch = false;
+  let isEnabledSquelch = enableSquelch;
+  let minMeterPosition = 8;
+  let maxMeterPosition = 0;
 
   if (meterBeginsAtS0) {
     minMeterPosition += 7;
@@ -38,19 +38,21 @@
   }
 
   const debugMode = false; // For debugging purposes only
+  const rotatorOffset = meterLocation === 'auto-rotator' ? 200 : 0;
 
   function initSignalMeterSmall() {
       document.addEventListener('DOMContentLoaded', function() {
           const panels = Array.from(document.querySelectorAll('.panel-33'));
-          var isOutsideField = OutsideField;
-          var setMeterLocation = meterLocation;
+          let isOutsideField = OutsideField;
+          let setMeterLocation = meterLocation;
+          if (setMeterLocation === 'auto-rotator') setMeterLocation = 'auto';
           if (localStorage.getItem("showPeakmeter") !== null && setMeterLocation === 'auto') {
             setMeterLocation = (localStorage.getItem("showPeakmeter") === 'true') ? 'auto' : 'sdr-graph';
           }
-          var existsPeakmeter;
+          let existsPeakmeter;
           if (setMeterLocation !== 'sdr-graph') existsPeakmeter = panels.find(panel => panel.querySelector('h2') && panel.querySelector('h2').textContent.includes('PEAKMETER'));
-          var existsSignal = panels.find(panel => panel.querySelector('h2') && panel.querySelector('h2').textContent.includes('SIGNAL'));
-          var offsetPeakmeter = -50;
+          let existsSignal = panels.find(panel => panel.querySelector('h2') && panel.querySelector('h2').textContent.includes('SIGNAL'));
+          let offsetPeakmeter = -50;
           let container;
           const signalMeter = document.createElement('canvas');
 
@@ -99,8 +101,8 @@
                           markerCanvas.style.position = 'absolute';
                           smallCanvas.style.top = '10px';
                           markerCanvas.style.top = '10px';
-                          smallCanvas.style.left = '172px';
-                          markerCanvas.style.left = '172px';
+                          smallCanvas.style.left = 172 + rotatorOffset + 'px';
+                          markerCanvas.style.left = 172 + rotatorOffset + 'px';
                           smallCanvas.offsetHeight;
                           markerCanvas.offsetHeight;
                           smallCanvas.style.boxShadow = '0px 0px 12px rgba(10, 10, 10, 0.25)';
@@ -389,8 +391,8 @@
           }
 
           setInterval(function() {
-              var windowWidth = window.innerWidth;
-              var windowHeight = window.innerHeight;
+              let windowWidth = window.innerWidth;
+              let windowHeight = window.innerHeight;
               // PEAKMETER
               if (setMeterLocation === 'signal' && existsPeakmeter) {
                 windowWidth = (window.innerWidth / 1.5).toFixed(0);
@@ -428,7 +430,7 @@
               signalStrengthHighest += (textContent === 'dbm' ? 120 : textContent === 'dbuv' ? 11.25 : 0);
 
               // Resize if needed
-              var width, margin;
+              let width, margin;
 
               if (windowWidth > 768) {
                   switch (true) {
@@ -551,13 +553,13 @@
   }
 
   function removeTooltips() {
-      var tooltips = document.querySelectorAll('.tooltiptext');
+      let tooltips = document.querySelectorAll('.tooltiptext');
       tooltips.forEach(function(tooltip) {
           tooltip.parentNode.removeChild(tooltip);
       });
   }
 
-  var needlePosition = minMeterPosition + 1;
+  let needlePosition = minMeterPosition + 1;
 
   // Functions to check squelch level and set volume
   function checkSquelch() {
@@ -660,12 +662,12 @@
         */
         // Convert reported dBm noise floor value to pixels
         if (radioNoiseFloor >= -140 && radioNoiseFloor <= -114) {
-          var sRepValue = ((2 * radioNoiseFloor) + 310).toFixed(1);
+          let sRepValue = ((2 * radioNoiseFloor) + 310).toFixed(1);
         } else {
-          var sRepValue = 64;
+          let sRepValue = 64;
         }
-        var sIntValue = 18; // Value in px of the interpolated noise floor
-        var sMaxValue = 86; // Value in px where signal begins to deviate
+        let sIntValue = 18; // Value in px of the interpolated noise floor
+        let sMaxValue = 86; // Value in px where signal begins to deviate
             if (needlePosition < sMaxValue) { needlePosition = sIntValue + (needlePosition - sRepValue) * (sMaxValue - sIntValue) / (sMaxValue - sRepValue); }
             if (needlePositionHighest < sMaxValue) { needlePositionHighest = sIntValue + (needlePositionHighest - sRepValue) * (sMaxValue - sIntValue) / (sMaxValue - sRepValue); }
       }
@@ -722,17 +724,17 @@
           $(document).on('mousedown', () => { clearTimeout($(this).data('timeout')); return; });
           if (!document.querySelector('.tooltip-meter')) { return; }
 
-          var tooltipText = $(this).data('tooltip');
+          let tooltipText = $(this).data('tooltip');
           // Add a delay of 500 milliseconds before creating and appending the tooltip
           $(this).data('timeout', setTimeout(() => {
-              var tooltip = $('<div class="tooltiptext"></div>').html(tooltipText);
+              let tooltip = $('<div class="tooltiptext"></div>').html(tooltipText);
               $('body').append(tooltip);
 
-              var posX = e.pageX;
-              var posY = e.pageY;
+              let posX = e.pageX;
+              let posY = e.pageY;
 
-              var tooltipWidth = tooltip.outerWidth();
-              var tooltipHeight = tooltip.outerHeight();
+              let tooltipWidth = tooltip.outerWidth();
+              let tooltipHeight = tooltip.outerHeight();
               posX -= tooltipWidth / 2;
               posY -= tooltipHeight + 10;
               tooltip.css({ top: posY, left: posX, opacity: .99 }); // Set opacity to 1
@@ -742,10 +744,10 @@
           clearTimeout($(this).data('timeout'));
           $('.tooltiptext').remove();
       }).mousemove(function(e){
-          var tooltipWidth = $('.tooltiptext').outerWidth();
-          var tooltipHeight = $('.tooltiptext').outerHeight();
-          var posX = e.pageX - tooltipWidth / 2;
-          var posY = e.pageY - tooltipHeight - 10;
+          let tooltipWidth = $('.tooltiptext').outerWidth();
+          let tooltipHeight = $('.tooltiptext').outerHeight();
+          let posX = e.pageX - tooltipWidth / 2;
+          let posY = e.pageY - tooltipHeight - 10;
 
           $('.tooltiptext').css({ top: posY, left: posX });
       });
