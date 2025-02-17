@@ -38,7 +38,7 @@
   }
 
   const debugMode = false; // For debugging purposes only
-  const rotatorOffset = meterLocation === 'auto-rotator' ? 200 : 0;
+  const rotatorOffset = meterLocation === 'auto-rotator' ? 204 : 0;
 
   function initSignalMeterSmall() {
       document.addEventListener('DOMContentLoaded', function() {
