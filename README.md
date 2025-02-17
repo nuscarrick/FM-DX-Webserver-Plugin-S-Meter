@@ -33,6 +33,10 @@ Displayed outside or within the SIGNAL container, your choice.
 `radioNoiseFloor`: The reported dBm signal reading with no antenna connected, used to calibrate enableLowSignalInterpolation.
 
 
+v1.3.5
+------
+* Fix for FM-DX Webserver v1.3.5 compatibility issues
+
 v1.3.4
 ------
 * Added intergration with Spectrum Graph plugin
