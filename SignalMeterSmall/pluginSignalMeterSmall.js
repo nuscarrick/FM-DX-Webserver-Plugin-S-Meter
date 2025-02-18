@@ -31,6 +31,7 @@
   let isEnabledSquelch = enableSquelch;
   let minMeterPosition = 8;
   let maxMeterPosition = 0;
+  let fullHeight = 720;
 
   if (meterBeginsAtS0) {
     minMeterPosition += 7;
@@ -187,6 +188,26 @@
               signalMeter.style.position = 'relative';
               markerCanvas.style.margin = '4px 0 0 -256px';
               markerCanvas.style.position = 'relative';
+              // FM-DX Webserver v1.3.5
+              if (document.querySelector('.dashboard-panel-plugin-list')) {
+                  let styleElement = document.createElement('style');
+                  styleElement.textContent = `
+                    .wrapper-outer #wrapper .flex-container .panel-100.no-bg .flex-container .panel-33 {
+                        max-height: unset !important;
+                    }
+                    .wrapper-outer #wrapper .flex-container .panel-100.no-bg .flex-container .panel-33 .text-big {
+                        max-height: 48px;
+                    }
+                    @media (min-height: ${fullHeight + 1}px) {
+                        .wrapper-outer #wrapper .flex-container .panel-100.no-bg .flex-container .panel-33 .text-big {
+                            max-height: 64px;
+                        }
+                    }
+                  `;
+                  document.head.appendChild(styleElement);
+              } else {
+                  fullHeight = 860;
+              }
           }
           container.appendChild(signalMeter);
           container.appendChild(markerCanvas);
@@ -473,7 +494,7 @@
                   if (isEnabledSquelch) { drawMarker(markerPosition); }
               }
 
-              if (!(/Mobi|Android/i.test(navigator.userAgent)) && windowWidth > 768 && windowHeight > 860) {
+              if (!(/Mobi|Android/i.test(navigator.userAgent)) && windowWidth > 768 && windowHeight > fullHeight) {
                   if (isOutsideField) {
                       if (document.getElementById('wrapper-outer')) {
                           // v1.2.4 compatibility
@@ -486,8 +507,8 @@
                       }
                   } else {
                       signalMeter.style.margin = '0 0 0 ' + margin;
-                      if (windowWidth > 768 && windowHeight < 860) {
-                          // If isOutsideField equals false and height is below 860px
+                      if (windowWidth > 768 && windowHeight < fullHeight) {
+                          // If isOutsideField equals false and height is below 'fullHeight' px
                           markerCanvas.style.margin = '0 0 0 -256px';
                       } else {
                           markerCanvas.style.margin = '0 0 0 -' + width;
