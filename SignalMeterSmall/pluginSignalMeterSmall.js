@@ -37,8 +37,8 @@
     maxMeterPosition = 11;
   }
 
+  const rotatorOffset = meterLocation === 'auto-rotator' ? 200 : 0;
   const debugMode = false; // For debugging purposes only
-  const rotatorOffset = meterLocation === 'auto-rotator' ? 204 : 0;
 
   function initSignalMeterSmall() {
       document.addEventListener('DOMContentLoaded', function() {
@@ -661,10 +661,11 @@
         [76 : -117 dBm /  3 dBf /  -8 dBuV]
         */
         // Convert reported dBm noise floor value to pixels
+        let sRepValue;
         if (radioNoiseFloor >= -140 && radioNoiseFloor <= -114) {
-          let sRepValue = ((2 * radioNoiseFloor) + 310).toFixed(1);
+          sRepValue = ((2 * radioNoiseFloor) + 310).toFixed(1);
         } else {
-          let sRepValue = 64;
+          sRepValue = 64;
         }
         let sIntValue = 18; // Value in px of the interpolated noise floor
         let sMaxValue = 86; // Value in px where signal begins to deviate
