@@ -84,7 +84,7 @@
 
               if (!smallCanvas || !markerCanvas || !originalContainer || existsPeakmeter || !isOutsideField || (setMeterLocation !== 'sdr-graph' && setMeterLocation !== 'auto')) return;
 
-              currentSdrGraphState = window.getComputedStyle(sdrGraph).display === 'block';
+              if (sdrGraph) currentSdrGraphState = window.getComputedStyle(sdrGraph).display === 'block';
 
               // For Spectrum Graph v1.2.1 added visual effects, let's override with opacity status
               if (opacitySdrGraph && opacitySdrGraph < 0.8) currentSdrGraphState = false;
