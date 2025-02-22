@@ -203,6 +203,11 @@
                             max-height: 64px;
                         }
                     }
+                    @media only screen and (max-width: 768px) and (max-height: 720px) {
+                        .wrapper-outer #wrapper .flex-container .panel-100.no-bg .flex-container .panel-33 {
+                            margin-bottom: 36px; /* For Peakmeter with mobile view and height below 720px */
+                        }
+                    }
                   `;
                   document.head.appendChild(styleElement);
               } else {
