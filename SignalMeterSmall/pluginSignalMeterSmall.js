@@ -134,14 +134,16 @@
                   manageCanvasPosition();
               });
 
-              // Start observing
-              observer.observe(document.body, {
-                  childList: true,
-                  subtree: true,
-                  attributes: true,
-                  attributeFilter: ['style', 'class', 'visibility', 'display']
-              });
-          }, 1000);
+                // Start observing
+                  setTimeout(() => {
+                      observer.observe(document.body, {
+                          childList: true,
+                          subtree: true,
+                          attributes: true,
+                          attributeFilter: ['style', 'class', 'visibility', 'display']
+                      });
+                  }, 3000);
+          }, 100);
 
           // #####################################################################
 
