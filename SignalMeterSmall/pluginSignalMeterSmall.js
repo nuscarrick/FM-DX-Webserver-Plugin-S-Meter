@@ -21,11 +21,19 @@
 
   //////////////////////////////////////////////////
 
+  const pluginVersion = '1.3.5';
+  const pluginName = "Signal Meter Small";
+  const pluginHomepageUrl = "https://github.com/AmateurAudioDude/FM-DX-Webserver-Plugin-S-Meter";
+  const pluginUpdateUrl = "https://raw.githubusercontent.com/AmateurAudioDude/FM-DX-Webserver-Plugin-S-Meter/refs/heads/main/SignalMeterSmall/pluginSignalMeterSmall.js";
+  const pluginSetupOnlyNotify = true;
+  const CHECK_FOR_UPDATES = true;
+
   // Global variables for other plugins
   pluginSignalMeterSmall = true;
   pluginSignalMeterSmallSquelchActive = false;
 
   // Set initial stream volume and other variables
+  if (window.location.pathname !== '/setup') var newVolumeGlobal = 0;
   let valueSquelchVolume = newVolumeGlobal || 1;
   let activeSquelch = false;
   let isEnabledSquelch = enableSquelch;
@@ -216,8 +224,8 @@
                   fullHeight = 860;
               }
           }
-          container.appendChild(signalMeter);
-          container.appendChild(markerCanvas);
+          if (window.location.pathname !== '/setup') container.appendChild(signalMeter);
+          if (window.location.pathname !== '/setup') container.appendChild(markerCanvas);
 
           markerPosition = minMeterPosition + 1; // Initial marker position
           markerPositionMin = '';
@@ -225,8 +233,8 @@
           showMarker = true;
 
           // Override breadcrumbs.css to make this canvas visible on mobile devices
-          document.getElementById('signal-meter-small-canvas').style.display = 'inline-block';
-          document.getElementById('signal-meter-small-marker-canvas').style.display = 'inline-block';
+          if (window.location.pathname !== '/setup') document.getElementById('signal-meter-small-canvas').style.display = 'inline-block';
+          if (window.location.pathname !== '/setup') document.getElementById('signal-meter-small-marker-canvas').style.display = 'inline-block';
 
           // Add tooltip
           let firstTooltip = `Double-click 'S' to toggle show/hide S-Meter.${isEnabledSquelch ? '<br><strong>Squelch does not affect other listeners.</strong>' : ''}`;
@@ -781,5 +789,91 @@
           $('.tooltiptext').css({ top: posY, left: posX });
       });
   }
+
+    // Function for update notification in /setup
+    function checkUpdate(setupOnly, pluginVersion, pluginName, urlUpdateLink, urlFetchLink) {
+        if (setupOnly && window.location.pathname !== '/setup') return;
+
+        // Function to check for updates
+        async function fetchFirstLine() {
+            const urlCheckForUpdate = urlFetchLink;
+
+            try {
+                const response = await fetch(urlCheckForUpdate);
+                if (!response.ok) {
+                    throw new Error(`[${pluginName}] update check HTTP error! status: ${response.status}`);
+                }
+
+                const text = await response.text();
+                const lines = text.split('\n');
+
+                let version;
+
+                if (lines.length > 2) {
+                    const versionLine = lines.find(line => line.includes("const pluginVersion =") || line.includes("const plugin_version ="));
+                    if (versionLine) {
+                        const match = versionLine.match(/const\s+plugin[_vV]ersion\s*=\s*['"]([^'"]+)['"]/);
+                        if (match) {
+                            version = match[1];
+                        }
+                    }
+                }
+
+                if (!version) {
+                    const firstLine = lines[0].trim();
+                    version = /^\d/.test(firstLine) ? firstLine : "Unknown"; // Check if first character is a number
+                }
+
+                return version;
+            } catch (error) {
+                console.error(`[${pluginName}] error fetching file:`, error);
+                return null;
+            }
+        }
+
+        // Check for updates
+        fetchFirstLine().then(newVersion => {
+            if (newVersion) {
+                if (newVersion !== pluginVersion) {
+                    let updateConsoleText = "There is a new version of this plugin available";
+                    // Any custom code here
+                    
+                    console.log(`[${pluginName}] ${updateConsoleText}`);
+                    setupNotify(pluginVersion, newVersion, pluginName, urlUpdateLink);
+                }
+            }
+        });
+
+        function setupNotify(pluginVersion, newVersion, pluginName, urlUpdateLink) {
+            if (window.location.pathname === '/setup') {
+              const pluginSettings = document.getElementById('plugin-settings');
+              if (pluginSettings) {
+                const currentText = pluginSettings.textContent.trim();
+                const newText = `<a href="${urlUpdateLink}" target="_blank">[${pluginName}] Update available: ${pluginVersion} --> ${newVersion}</a><br>`;
+
+                if (currentText === 'No plugin settings are available.') {
+                  pluginSettings.innerHTML = newText;
+                } else {
+                  pluginSettings.innerHTML += ' ' + newText;
+                }
+              }
+
+              const updateIcon = document.querySelector('.wrapper-outer #navigation .sidenav-content .fa-puzzle-piece') || document.querySelector('.wrapper-outer .sidenav-content') || document.querySelector('.sidenav-content');
+
+              const redDot = document.createElement('span');
+              redDot.style.display = 'block';
+              redDot.style.width = '12px';
+              redDot.style.height = '12px';
+              redDot.style.borderRadius = '50%';
+              redDot.style.backgroundColor = '#FE0830' || 'var(--color-main-bright)'; // Theme colour set here as placeholder only
+              redDot.style.marginLeft = '82px';
+              redDot.style.marginTop = '-12px';
+
+              updateIcon.appendChild(redDot);
+            }
+        }
+    }
+
+    if (CHECK_FOR_UPDATES) checkUpdate(pluginSetupOnlyNotify, pluginVersion, pluginName, pluginHomepageUrl, pluginUpdateUrl);
 
 })();
