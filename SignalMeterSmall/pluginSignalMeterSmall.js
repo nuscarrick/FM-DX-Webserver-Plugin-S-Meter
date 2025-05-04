@@ -33,7 +33,7 @@
   pluginSignalMeterSmallSquelchActive = false;
 
   // Set initial stream volume and other variables
-  if (window.location.pathname !== '/setup') var newVolumeGlobal = 0;
+  if (window.location.pathname === '/setup') newVolumeGlobal = 0;
   let valueSquelchVolume = newVolumeGlobal || 1;
   let activeSquelch = false;
   let isEnabledSquelch = enableSquelch;
