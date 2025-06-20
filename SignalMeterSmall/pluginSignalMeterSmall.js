@@ -23,7 +23,7 @@ var pluginSignalMeterSmallSquelchActive = false;
   const meterBeginsAtS0 = true;               // Strictly S0-S9+60 meter range
   const useThemeColors = true;                // Background matches theme
   const radioNoiseFloor = -123;               // The reported dBm signal reading with no antenna connected used to calibrate enableLowSignalInterpolation
-  const meterLocation = 'auto';               // Set to 'auto' for default position, or force with 'signal', 'sdr-graph', 'peakmeter', or 'auto-rotator'
+  const meterLocation = 'auto';               // Set to 'auto' for default position, or force with 'signal', 'sdr-graph', 'sdr-graph-only, 'peakmeter', or 'auto-rotator'
 
   //////////////////////////////////////////////////
 
