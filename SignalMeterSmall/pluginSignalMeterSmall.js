@@ -58,11 +58,15 @@ var pluginSignalMeterSmallSquelchActive = false;
           let isOutsideField = OutsideField;
           let setMeterLocation = meterLocation;
           if (setMeterLocation === 'auto-rotator') setMeterLocation = 'auto';
-          if (localStorage.getItem("showPeakmeter") !== null && setMeterLocation === 'auto') {
-            setMeterLocation = (localStorage.getItem("showPeakmeter") === 'true') ? 'auto' : 'sdr-graph';
+          if (localStorage.getItem("showPeakmeter") !== null && (setMeterLocation === 'auto' || setMeterLocation === 'sdr-graph-only')) {
+            if (setMeterLocation === 'auto') {
+              setMeterLocation = (localStorage.getItem("showPeakmeter") === 'true') ? 'auto' : 'sdr-graph';
+            } else if (setMeterLocation === 'sdr-graph-only') {
+              setMeterLocation = (localStorage.getItem("showPeakmeter") === 'true') ? 'auto' : 'sdr-graph-only';
+            }
           }
           let existsPeakmeter;
-          if (setMeterLocation !== 'sdr-graph') existsPeakmeter = panels.find(panel => panel.querySelector('h2') && panel.querySelector('h2').textContent.includes('PEAKMETER'));
+          if (setMeterLocation !== 'sdr-graph' && setMeterLocation !== 'sdr-graph-only') existsPeakmeter = panels.find(panel => panel.querySelector('h2') && panel.querySelector('h2').textContent.includes('PEAKMETER'));
           let existsSignal = panels.find(panel => panel.querySelector('h2') && panel.querySelector('h2').textContent.includes('SIGNAL'));
           let offsetPeakmeter = -50;
           let container;
@@ -99,7 +103,7 @@ var pluginSignalMeterSmallSquelchActive = false;
 
               const originalContainer = existsSignal;
 
-              if (!smallCanvas || !markerCanvas || !originalContainer || existsPeakmeter || !isOutsideField || (setMeterLocation !== 'sdr-graph' && setMeterLocation !== 'auto')) return;
+              if (!smallCanvas || !markerCanvas || !originalContainer || existsPeakmeter || !isOutsideField || (setMeterLocation !== 'sdr-graph' && setMeterLocation !== 'sdr-graph-only' && setMeterLocation !== 'auto')) return;
 
               if (sdrGraph) isSdrGraphVisible = Number(window.getComputedStyle(sdrGraph).opacity);
               if (signalCanvas) isSignalCanvasVisible = Number(window.getComputedStyle(signalCanvas).opacity);
@@ -177,8 +181,10 @@ var pluginSignalMeterSmallSquelchActive = false;
                       // If sdrGraph is hidden
                       if (smallCanvas.parentElement !== originalContainer) {
                           setTimeout(() => {
-                              smallCanvas.style.opacity = 1;
-                              markerCanvas.style.opacity = 1;
+                              if (setMeterLocation !== 'sdr-graph-only') {
+                                smallCanvas.style.opacity = 1;
+                                markerCanvas.style.opacity = 1;
+                              }
                               smallCanvas.style.transform = 'scale(1)';
                               markerCanvas.style.transform = 'scale(1)';
 
@@ -206,6 +212,14 @@ var pluginSignalMeterSmallSquelchActive = false;
           }
 
           setTimeout(() => {
+              const smallCanvasSdrOnly = document.querySelector('#signal-meter-small-canvas');
+              const markerCanvasSdrOnly = document.querySelector('#signal-meter-small-marker-canvas');
+
+              if (setMeterLocation === 'sdr-graph-only') {
+                  if (smallCanvasSdrOnly) smallCanvasSdrOnly.style.opacity = 0;
+                  if (markerCanvasSdrOnly) markerCanvasSdrOnly.style.opacity = 0;
+              }
+
               // Monitor changes in DOM
               const observer = new MutationObserver(() => {
                   manageCanvasPosition();
@@ -220,7 +234,7 @@ var pluginSignalMeterSmallSquelchActive = false;
                           attributeFilter: ['style', 'class', 'visibility', 'display']
                       });
                   }, 40);
-          }, 10);
+          }, 0);
 
           // #####################################################################
 
