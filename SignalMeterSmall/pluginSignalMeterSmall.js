@@ -5,6 +5,12 @@
     Original concept by Analog Signal Meter: https://github.com/NO2CW/FM-DX-Webserver-analog-signal-meter
 */
 
+'use strict';
+
+// Global variables for other plugins
+const pluginSignalMeterSmall = true;
+var pluginSignalMeterSmallSquelchActive = false;
+
 (() => {
 
   //////////////////////////////////////////////////
@@ -28,10 +34,6 @@
   const pluginSetupOnlyNotify = true;
   const CHECK_FOR_UPDATES = true;
 
-  // Global variables for other plugins
-  pluginSignalMeterSmall = true;
-  pluginSignalMeterSmallSquelchActive = false;
-
   // Set initial stream volume and other variables
   if (window.location.pathname === '/setup') window.newVolumeGlobal = 0;
   let valueSquelchVolume = newVolumeGlobal || 1;
@@ -40,6 +42,7 @@
   let minMeterPosition = 8;
   let maxMeterPosition = 0;
   let fullHeight = 720;
+  let offset, markerPosition, markerPositionMin, markerPositionMax, showMarker, signalStrength, signalStrengthHighest, needlePositionHighest;
 
   if (meterBeginsAtS0) {
     minMeterPosition += 7;
@@ -67,16 +70,22 @@
 
           // #####################################################################
           // Code to move canvas to #sdr-graph
+          let canChangeState = true;
+          let currentSdrGraphState = false;
+          let isGraphReady = false;
           let lastSdrGraphState = null;  // Store the last state of #sdr-graph
+          let canChangeStateTimeout;
+          let isSdrGraphVisible;
+          let isSignalCanvasVisible;
+          let isOnTop;
+          let opacitySdrGraph; // If above signal graph
 
           function manageCanvasPosition() {
               const sdrGraph = document.querySelector('#sdr-graph');
+              const signalCanvas = document.querySelector('#signal-canvas');
+
+              // If above signal graph
               const sdrCanvasCheck = document.getElementById('sdr-graph');
-
-              let opacitySdrGraph;
-              let currentSdrGraphState;
-
-              // For Spectrum Graph v1.2.1 added visual effects, let's override with opacity status
               if (sdrCanvasCheck) opacitySdrGraph = window.getComputedStyle(sdrCanvasCheck).opacity;
 
               const smallCanvas = document.querySelector('#signal-meter-small-canvas');
@@ -92,18 +101,55 @@
 
               if (!smallCanvas || !markerCanvas || !originalContainer || existsPeakmeter || !isOutsideField || (setMeterLocation !== 'sdr-graph' && setMeterLocation !== 'auto')) return;
 
-              if (sdrGraph) currentSdrGraphState = window.getComputedStyle(sdrGraph).display === 'block';
+              if (sdrGraph) isSdrGraphVisible = Number(window.getComputedStyle(sdrGraph).opacity);
+              if (signalCanvas) isSignalCanvasVisible = Number(window.getComputedStyle(signalCanvas).opacity);
 
-              // For Spectrum Graph v1.2.1 added visual effects, let's override with opacity status
-              if (opacitySdrGraph && opacitySdrGraph < 0.8) currentSdrGraphState = false;
+              if (!isGraphReady && !isSdrGraphVisible && isSignalCanvasVisible) isGraphReady = true;
+
+              // Check if SDR graph is above signal graph
+              if (sdrGraph && signalCanvas) {
+                  const rect1 = sdrGraph.getBoundingClientRect();
+                  const rect2 = signalCanvas.getBoundingClientRect();
+
+                  const tolerance = 1;
+                  isOnTop = Math.abs(rect1.left - rect2.left) < tolerance;
+              }
+
+              if (isOnTop) {
+                  // If above signal graph
+                  if (sdrGraph) currentSdrGraphState = window.getComputedStyle(sdrGraph).display === 'block';
+                  if (opacitySdrGraph && opacitySdrGraph < 0.5) currentSdrGraphState = false;
+              } else {
+                  // Quick change
+                  if (isSdrGraphVisible && isSignalCanvasVisible && canChangeState) {
+                      currentSdrGraphState = !currentSdrGraphState;
+                      canChangeState = false;
+                  }
+                  // Delayed change & backup
+                  if (!isSdrGraphVisible && isSignalCanvasVisible && currentSdrGraphState) {
+                      currentSdrGraphState = false;
+                  } else if (isSdrGraphVisible && !isSignalCanvasVisible && !currentSdrGraphState) {
+                      currentSdrGraphState = true;
+                  }
+              }
 
               // Only perform if state of sdrGraph has changed
               if (currentSdrGraphState !== lastSdrGraphState) {
                   lastSdrGraphState = currentSdrGraphState;
 
-                  if (currentSdrGraphState) {
+                  clearTimeout(canChangeStateTimeout);
+                  canChangeStateTimeout = setTimeout(() => {
+                      canChangeState = true;
+                  }, 400);
+
+                  if (currentSdrGraphState && isGraphReady) {
                       // If sdrGraph is visible
                       if (smallCanvas.parentElement !== sdrGraph.parentElement) {
+                          smallCanvas.style.opacity = 0;
+                          markerCanvas.style.opacity = 0;
+                          smallCanvas.style.transform = 'scale(0.96)';
+                          markerCanvas.style.transform = 'scale(0.96)';
+
                           sdrGraph.parentElement.appendChild(smallCanvas);
                           sdrGraph.parentElement.appendChild(markerCanvas);
                           smallCanvas.style.position = 'absolute';
@@ -114,13 +160,28 @@
                           markerCanvas.style.left = 172 + rotatorOffset + 'px';
                           smallCanvas.offsetHeight;
                           markerCanvas.offsetHeight;
+
+                          // Fade effect
+                          smallCanvas.style.opacity = 1;
+                          markerCanvas.style.opacity = 1;
+                          smallCanvas.style.transition = 'opacity 0.4s ease-in-out, transform 0.4s ease-in-out';
+                          markerCanvas.style.transition = 'opacity 0.4s ease-in-out, transform 0.4s ease-in-out';
+                          smallCanvas.style.transform = 'scale(1)';
+                          markerCanvas.style.transform = 'scale(1)';
+
                           smallCanvas.style.boxShadow = '0px 0px 12px rgba(10, 10, 10, 0.25)';
                           smallCanvas.style.background = 'rgba(10, 10, 10, 0.1)';
                           smallCanvas.style.backdropFilter = 'blur(10px)';
                       }
                   } else {
                       // If sdrGraph is hidden
-                          if (smallCanvas.parentElement !== originalContainer) {
+                      if (smallCanvas.parentElement !== originalContainer) {
+                          setTimeout(() => {
+                              smallCanvas.style.opacity = 1;
+                              markerCanvas.style.opacity = 1;
+                              smallCanvas.style.transform = 'scale(1)';
+                              markerCanvas.style.transform = 'scale(1)';
+
                               originalContainer.appendChild(smallCanvas);
                               originalContainer.appendChild(markerCanvas);
                               smallCanvas.style.top = '';
@@ -131,7 +192,15 @@
                               smallCanvas.style.zIndex = '';
                               smallCanvas.style.boxShadow = '';
                               smallCanvas.style.background = '';
-                          }
+                          }, 250);
+                          // Fade effect
+                          smallCanvas.style.opacity = 0;
+                          markerCanvas.style.opacity = 0;
+                          smallCanvas.style.transition = 'opacity 0.3s ease-in-out, transform 0.3s ease-in-out';
+                          markerCanvas.style.transition = 'opacity 0.3s ease-in-out, transform 0.3s ease-in-out';
+                          smallCanvas.style.transform = 'scale(0.96)';
+                          markerCanvas.style.transform = 'scale(0.96)';
+                      }
                   }
               }
           }
@@ -150,8 +219,8 @@
                           attributes: true,
                           attributeFilter: ['style', 'class', 'visibility', 'display']
                       });
-                  }, 3000);
-          }, 100);
+                  }, 40);
+          }, 10);
 
           // #####################################################################
 
