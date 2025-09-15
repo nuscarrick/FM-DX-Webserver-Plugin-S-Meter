@@ -15,7 +15,7 @@ var pluginSignalMeterSmallSquelchActive = false;
 
   //////////////////////////////////////////////////
 
-  const OutsideField = true;                  // Display meter outside the SIGNAL container
+  const OutsideField = false;                  // Display meter outside the SIGNAL container
   const enableSquelch = true;                 // Allow squelch function to be used
   const enableLowSignalInterpolation = true;  // Attempts to calculate and correct low noise floor reading
   const squelchMutePercentage = 0;            // Set to 1 if 0 causes audio stuttering during active squelch
